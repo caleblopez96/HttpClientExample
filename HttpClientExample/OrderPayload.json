@@ -1,0 +1,51 @@
+// Order JSON Payload
+  {
+    "success": true,
+    "data": [
+      {
+        "order_id": 1001,
+        "customer": {
+          "customer_id": 501,
+          "name": {
+            "first": "Jasmine",
+            "last": "Carter"
+          },
+          "email": "jasmine.carter@example.com"
+        },
+        "items": [
+          {
+            "product_id": 3001,
+            "product_name": "Wireless Keyboard",
+            "quantity": 2,
+            "price": 49.99
+          },
+          {
+            "product_id": 3002,
+            "product_name": "Bluetooth Mouse",
+            "quantity": 1,
+            "price": 29.99
+          }
+        ],
+        "shipping": {
+          "address": "123 Main St, Springfield",
+          "method": "Express",
+          "shipped_date": "2025-06-05"
+        },
+        "order_status": "Shipped"
+      },
+      {
+        "order_id": 1002,
+        "customer": {
+          "customer_id": 502,
+          "name": {
+            "first": "Darius",
+            "last": "Nguyen"
+          },
+          "email": "darius.nguyen@example.com"
+        },
+        "items": [],
+        "shipping": null,
+        "order_status": "Pending"
+      }
+    ]
+  }

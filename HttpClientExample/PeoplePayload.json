@@ -1,0 +1,43 @@
+{
+  "success": true,
+  "people": [
+    {
+      "id": 1,
+      "full_name": {
+        "first": "Benedict",
+        "last": "Trussell"
+      },
+      "email": "btrussell0@paypal.com",
+      "gender": "Male",
+      "employment": {
+        "job_title": "Software Developer",
+        "company": {
+          "name": "TechCorp",
+          "location": "New York"
+        },
+        "start_date": "2022-01-15"
+      },
+      "contacts": [
+        {
+          "type": "mobile",
+          "number": "555-1234"
+        },
+        {
+          "type": "email",
+          "address": "benedict.work@techcorp.com"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "full_name": {
+        "first": "Quillan",
+        "last": "De Ruel"
+      },
+      "email": "qderuel1@odnoklassniki.ru",
+      "gender": "Male",
+      "employment": null,
+      "contacts": []
+    }
+  ]
+}
