@@ -1,59 +1,61 @@
-﻿// Step 1: Get the response from the api (200, 202, 400, 404, etc...)
-// Steo 2: Read content from the response (response.Content)
-// Step 3: Deserialize the JSON response
+﻿using System.Text.Json;
+using static HttpClientExample.Models.UserResponse; // class containing API response models
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace HttpClientExample
 {
-    class Program
+    internal class Program
     {
         readonly HttpClient client = new();
 
         static async Task Main()
         {
             Program program = new();
-            await program.GetTodoItems();
+            await program.GetUsersData();
         }
 
-        private async Task GetTodoItems()
+        private async Task GetUsersData()
         {
-            // get response
-            HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/todos");
+            // Step 1: Get response
+            HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/users");
 
-            // read content from response
+            // Step 2: Read content from response
             string content = await response.Content.ReadAsStringAsync();
 
-            // deserialize the JSON content
-            List<Todo>? todos = JsonSerializer.Deserialize<List<Todo>>(content);
+            // Step 3: Deserialize the JSON content
+            List<User>? users = JsonSerializer.Deserialize<List<User>>(content);
 
-            if (todos != null)
+            if (users != null)
             {
-                foreach (var todo in todos)
+                Console.WriteLine("=== JSONPlaceholder Users ===");
+                foreach (var user in users)
                 {
-                    Console.WriteLine($"Todo: {todo.Title}: Completed: {todo.Completed}");
+                    Console.WriteLine($"User ID: {user.Id}");
+                    Console.WriteLine($"Name: {user.Name}");
+                    Console.WriteLine($"Username: {user.Username}");
+                    Console.WriteLine($"Email: {user.Email}");
+                    Console.WriteLine($"Phone: {user.Phone}");
+                    Console.WriteLine($"Website: {user.Website}");
+
+                    if (user.Address != null)
+                    {
+                        Console.WriteLine($"Address: {user.Address.Street}, {user.Address.Suite}");
+                        Console.WriteLine($"City: {user.Address.City}, {user.Address.Zipcode}");
+                    }
+
+                    if (user.Company != null)
+                    {
+                        Console.WriteLine($"Company: {user.Company.Name}");
+                        Console.WriteLine($"Catchphrase: {user.Company.CatchPhrase}");
+                    }
+
+                    Console.WriteLine("---");
                 }
             }
             else
             {
                 Console.WriteLine("Failed to deserialize the response.");
             }
-        }
-
-        class Todo
-        {
-            [JsonPropertyName("userId")]
-            public int UserId { get; set; }
-
-            [JsonPropertyName("id")]
-            public int Id { get; set; }
-
-            [JsonPropertyName("title")]
-            public string? Title { get; set; }
-
-            [JsonPropertyName("completed")]
-            public bool Completed { get; set; }
         }
     }
 }

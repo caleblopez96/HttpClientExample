@@ -3,7 +3,7 @@
 using System.Text.Json.Serialization;
 
 
-namespace HttpClientExample
+namespace HttpClientExample.Models.Practice
 {
     internal class PeopleResponse
     {
