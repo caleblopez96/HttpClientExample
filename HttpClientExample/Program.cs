@@ -1,61 +1,69 @@
-﻿using System.Text.Json;
-using static HttpClientExample.Models.UserResponse; // class containing API response models
+﻿using HttpClientExample.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-
-namespace HttpClientExample
-{
-    internal class Program
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((_, services) =>
     {
-        readonly HttpClient client = new();
+        // Register services with typed HttpClients
+        services.AddHttpClient<UserService>();
+        services.AddHttpClient<PostService>();
+    }).ConfigureLogging(logging =>
+    {
+        // clear out the default logging
+        logging.ClearProviders();
+    })
+    .Build();
 
-        static async Task Main()
-        {
-            Program program = new();
-            await program.GetUsersData();
-        }
+// Resolve the services from host.Services
+var userService = host.Services.GetRequiredService<UserService>();
+var postService = host.Services.GetRequiredService<PostService>();
 
-        private async Task GetUsersData()
-        {
-            // Step 1: Get response
-            HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/users");
+// Run the app logic
+await GetUsersData(userService);
+Console.WriteLine();
+await GetPostData(postService);
+Console.WriteLine();
+await GetPostDataById(postService);
 
-            // Step 2: Read content from response
-            string content = await response.Content.ReadAsStringAsync();
+// App logic methods
+static async Task GetUsersData(UserService userService)
+{
+    var users = await userService.GetAllUsers();
+    Console.WriteLine($"Retrieved {users.Count} users\n");
+    foreach (var user in users)
+    {
+        Console.WriteLine($"{user.Id}: {user.Name} ({user.Email})");
+        Console.WriteLine();
+    }
+}
 
-            // Step 3: Deserialize the JSON content
-            List<User>? users = JsonSerializer.Deserialize<List<User>>(content);
+static async Task GetPostData(PostService postService)
+{
+    var posts = await postService.GetAllPostAsync();
+    var topPosts = posts.Take(5);
+    Console.WriteLine($"Retrieved {topPosts.Count()} posts\n");
+    foreach (var post in topPosts)
+    {
+        Console.WriteLine($"Post {post.Id}: {post.Title} - {post.Body}");
+        Console.WriteLine();
+    }
+}
 
-            if (users != null)
-            {
-                Console.WriteLine("=== JSONPlaceholder Users ===");
-                foreach (var user in users)
-                {
-                    Console.WriteLine($"User ID: {user.Id}");
-                    Console.WriteLine($"Name: {user.Name}");
-                    Console.WriteLine($"Username: {user.Username}");
-                    Console.WriteLine($"Email: {user.Email}");
-                    Console.WriteLine($"Phone: {user.Phone}");
-                    Console.WriteLine($"Website: {user.Website}");
-
-                    if (user.Address != null)
-                    {
-                        Console.WriteLine($"Address: {user.Address.Street}, {user.Address.Suite}");
-                        Console.WriteLine($"City: {user.Address.City}, {user.Address.Zipcode}");
-                    }
-
-                    if (user.Company != null)
-                    {
-                        Console.WriteLine($"Company: {user.Company.Name}");
-                        Console.WriteLine($"Catchphrase: {user.Company.CatchPhrase}");
-                    }
-
-                    Console.WriteLine("---");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Failed to deserialize the response.");
-            }
-        }
+static async Task GetPostDataById(PostService postService)
+{
+    int postId = 1;
+    var post = await postService.GetPostByIdAsync(postId);
+    if (post != null)
+    {
+        Console.WriteLine($"Post ID: {post.Id}");
+        Console.WriteLine($"User ID: {post.UserId}");
+        Console.WriteLine($"Title: {post.Title}");
+        Console.WriteLine($"Body: {post.Body}");
+    }
+    else
+    {
+        Console.WriteLine($"No post found by postId {postId}");
     }
 }
