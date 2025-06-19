@@ -1,14 +1,14 @@
-1. Overall Architecture
+# Overall Architecture
 The app follows a layered architecture with clear separation of concerns:
 
-DTOs (Data Transfer Objects):
+## DTOs (Data Transfer Objects):
 These are simple classes that model the JSON data structure returned by the external API.
 
 They are used exclusively for data deserialization.
 
 No business logic here, just properties matching the API JSON.
 
-Services Layer:
+## Services Layer:
 This layer contains service classes like UserService and PostService.
 
 Each service is responsible for communicating with a specific API endpoint.
@@ -19,7 +19,7 @@ They deserialize JSON responses into DTOs using HttpClient extension methods lik
 
 The services expose asynchronous methods (getAllUsers(), getAllPost()) that return strongly typed collections.
 
-Program / Application Layer:
+## Program / Application Layer:
 This is the console app entry point (Program.cs) that:
 
 Configures dependency injection (DI) and logging via the Host builder.
@@ -30,7 +30,7 @@ Resolves services from the DI container to call their API methods.
 
 Implements application logic to call services, receive DTO data, and display or process it.
 
-2. Dependency Injection & HttpClientFactory
+## Dependency Injection & HttpClientFactory
 The app uses .NET Generic Host to provide DI and logging support in a console app.
 
 Host.CreateDefaultBuilder() configures the default environment, logging, and DI container.
@@ -45,7 +45,7 @@ Services receive HttpClient instances injected automatically by DI.
 
 At runtime, Program resolves service instances from the DI container to invoke API calls.
 
-3. Flow of a Typical API Call
+### Flow of a Typical API Call
 Program calls a service method, e.g., userService.getAllUsers().
 
 Service uses its injected HttpClient to send an HTTP GET request to the configured API endpoint.
@@ -58,7 +58,7 @@ The service method returns the typed DTO collection back to the caller.
 
 Program processes the data, e.g., loops through users and outputs to console.
 
-4. Benefits of this Architecture
+## Benefits of this Architecture
 Separation of concerns:
 API communication is isolated in services, presentation/output logic stays in Program.
 
@@ -74,3 +74,7 @@ Using HttpClientFactory via AddHttpClient() avoids socket exhaustion issues and 
 Logging & Configuration:
 The generic host provides built-in structured logging and easy configuration extension.
 
+### Notes:
+What Postman Does in Your Workflow:
+Test API endpoints manually
+Before you wire them into your app, you can send test requests (GET, POST, PUT, DELETE etc) and see what the API responds with — headers, status codes, and most importantly, the JSON response body.
