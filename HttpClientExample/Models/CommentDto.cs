@@ -18,18 +18,18 @@ namespace HttpClientExample.Models
     public class CommentDto
     {
         [JsonPropertyName("postId")]
-        public required int PostId { get; set; }
+        public int? PostId { get; set; }
 
         [JsonPropertyName("id")]
-        public required int Id { get; set; }
+        public int? Id { get; set; }
 
         [JsonPropertyName("name")]
-        public required string Name { get; set; }
+        public string? Name { get; set; }
 
         [JsonPropertyName("email")]
-        public required string Email { get; set; }
+        public string? Email { get; set; }
 
         [JsonPropertyName("body")]
-        public required string Body { get; set; }
+        public string? Body { get; set; }
     }
 }

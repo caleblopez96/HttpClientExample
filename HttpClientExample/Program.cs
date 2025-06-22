@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.Design;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
@@ -9,6 +10,7 @@ var host = Host.CreateDefaultBuilder(args)
         // Register services with typed HttpClients
         services.AddHttpClient<UserService>();
         services.AddHttpClient<PostService>();
+        services.AddHttpClient<CommentService>();
     }).ConfigureLogging(logging =>
     {
         // clear out the default logging
@@ -19,6 +21,7 @@ var host = Host.CreateDefaultBuilder(args)
 // Resolve the services from host.Services
 var userService = host.Services.GetRequiredService<UserService>();
 var postService = host.Services.GetRequiredService<PostService>();
+var commentService = host.Services.GetRequiredService<CommentService>();
 
 // Run the app logic
 await GetUsersData(userService);
@@ -26,6 +29,10 @@ Console.WriteLine();
 await GetPostData(postService);
 Console.WriteLine();
 await GetPostDataById(postService);
+Console.WriteLine();
+await GetComments(commentService);
+Console.WriteLine();
+await GetCommentById(commentService);
 
 // App logic methods
 static async Task GetUsersData(UserService userService)
@@ -66,4 +73,36 @@ static async Task GetPostDataById(PostService postService)
     {
         Console.WriteLine($"No post found by postId {postId}");
     }
+}
+
+static async Task GetComments(CommentService commentService)
+{
+    var comments = await commentService.GetAllComments();
+    var top10Comments = comments.Take(10);
+    Console.WriteLine("First 10 Comments");
+    Console.WriteLine();
+    foreach (var comment in top10Comments)
+    {
+        Console.WriteLine($"CommentID: {comment.Id}");
+        Console.WriteLine($"Post: {comment.Name}");
+        Console.WriteLine($"Post Email: {comment.Email}");
+        Console.WriteLine($"Post Body: {comment.Body}");
+        Console.WriteLine();
+    }
+}
+
+static async Task GetCommentById(CommentService commentService)
+{
+    int postId = 5;
+    var comment = await commentService.GetCommentByCommentId(postId);
+    if (comment != null)
+    {
+        Console.WriteLine($"CommentId: {comment.Id}");
+        Console.WriteLine($"Comment: {comment.Body}");
+    }
+    else
+    {
+        Console.WriteLine($"No comment at comment id {postId}");
+    }
+
 }

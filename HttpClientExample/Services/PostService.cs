@@ -55,7 +55,5 @@ namespace HttpClientExample.Services
                 return null;
             }
         }
-
     }
-
 }

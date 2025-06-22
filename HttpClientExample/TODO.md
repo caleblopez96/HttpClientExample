@@ -13,7 +13,7 @@ Method	Endpoint	Description
 [X] GET	/posts	List all posts
 [X] GET	/posts/{id}	Get a single post by ID
 [X] GET	/comments	List all comments
-GET	/comments/{id}	Get a single comment by ID
+[] GET	/comments/{id}	Get a single comment by ID
 GET	/albums	List all albums
 GET	/albums/{id}	Get a single album by ID
 GET	/photos	List all photos
