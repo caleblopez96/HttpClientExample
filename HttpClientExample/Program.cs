@@ -1,8 +1,9 @@
-﻿using HttpClientExample.Services;
+﻿using HttpClientExample.Models;
+using HttpClientExample.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.Design;
+using Serilog;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
@@ -11,6 +12,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddHttpClient<UserService>();
         services.AddHttpClient<PostService>();
         services.AddHttpClient<CommentService>();
+        services.AddHttpClient<AlbumService>();
     }).ConfigureLogging(logging =>
     {
         // clear out the default logging
@@ -22,6 +24,7 @@ var host = Host.CreateDefaultBuilder(args)
 var userService = host.Services.GetRequiredService<UserService>();
 var postService = host.Services.GetRequiredService<PostService>();
 var commentService = host.Services.GetRequiredService<CommentService>();
+var albumService = host.Services.GetRequiredService<AlbumService>();
 
 // Run the app logic
 await GetUsersData(userService);
@@ -33,6 +36,11 @@ Console.WriteLine();
 await GetComments(commentService);
 Console.WriteLine();
 await GetCommentById(commentService);
+Console.WriteLine();
+await GetAllAlbums(albumService);
+Console.WriteLine();
+await GetAlbumByAlbumId(albumService);
+Console.WriteLine();
 
 // App logic methods
 static async Task GetUsersData(UserService userService)
@@ -105,4 +113,34 @@ static async Task GetCommentById(CommentService commentService)
         Console.WriteLine($"No comment at comment id {postId}");
     }
 
+}
+
+static async Task GetAllAlbums(AlbumService albumService)
+{
+    var albums = await albumService.GetAllAlbumsAsync();
+
+    if (albums != null)
+    {
+        var top10Albums = albums.Take(10);
+        Console.WriteLine("First 10 Albums");
+        foreach (var album in top10Albums)
+        {
+            Console.WriteLine($"Album: {album.Title}");
+        }
+    }
+}
+
+static async Task GetAlbumByAlbumId(AlbumService albumService)
+{
+    int albumId = 5;
+    AlbumDto? album = await albumService.GetAlbumById(albumId);
+    if (album != null)
+    {
+        Console.WriteLine($"Album ID: {album.Id}");
+        Console.WriteLine($"Album Title: {album.Title}");
+    }
+    else
+    {
+        Console.WriteLine($"No album at album ID: {albumId}");
+    }
 }
