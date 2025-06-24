@@ -13,6 +13,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddHttpClient<PostService>();
         services.AddHttpClient<CommentService>();
         services.AddHttpClient<AlbumService>();
+        services.AddHttpClient<PhotoService>();
     }).ConfigureLogging(logging =>
     {
         // clear out the default logging
@@ -25,25 +26,29 @@ var userService = host.Services.GetRequiredService<UserService>();
 var postService = host.Services.GetRequiredService<PostService>();
 var commentService = host.Services.GetRequiredService<CommentService>();
 var albumService = host.Services.GetRequiredService<AlbumService>();
+var photoService = host.Services.GetRequiredService<PhotoService>();
 
 // Run the app logic
-await GetUsersData(userService);
+await DisplayUsersData(userService);
 Console.WriteLine();
-await GetPostData(postService);
+await DisplayPostData(postService);
 Console.WriteLine();
-await GetPostDataById(postService);
+await DisplayPostDataById(postService);
 Console.WriteLine();
-await GetComments(commentService);
+await DisplayComments(commentService);
 Console.WriteLine();
-await GetCommentById(commentService);
+await DisplayCommentById(commentService);
 Console.WriteLine();
-await GetAllAlbums(albumService);
+await DisplayAllAlbums(albumService);
 Console.WriteLine();
-await GetAlbumByAlbumId(albumService);
+await DisplayAlbumByAlbumId(albumService);
 Console.WriteLine();
+await DisplayAllPhotos(photoService);
+Console.WriteLine();
+await DisplayPhotoById(photoService);
 
 // App logic methods
-static async Task GetUsersData(UserService userService)
+static async Task DisplayUsersData(UserService userService)
 {
     var users = await userService.GetAllUsers();
     Console.WriteLine($"Retrieved {users.Count} users\n");
@@ -54,7 +59,7 @@ static async Task GetUsersData(UserService userService)
     }
 }
 
-static async Task GetPostData(PostService postService)
+static async Task DisplayPostData(PostService postService)
 {
     var posts = await postService.GetAllPostAsync();
     var topPosts = posts.Take(5);
@@ -66,7 +71,7 @@ static async Task GetPostData(PostService postService)
     }
 }
 
-static async Task GetPostDataById(PostService postService)
+static async Task DisplayPostDataById(PostService postService)
 {
     int postId = 1;
     var post = await postService.GetPostByIdAsync(postId);
@@ -83,7 +88,7 @@ static async Task GetPostDataById(PostService postService)
     }
 }
 
-static async Task GetComments(CommentService commentService)
+static async Task DisplayComments(CommentService commentService)
 {
     var comments = await commentService.GetAllComments();
     var top10Comments = comments.Take(10);
@@ -99,7 +104,7 @@ static async Task GetComments(CommentService commentService)
     }
 }
 
-static async Task GetCommentById(CommentService commentService)
+static async Task DisplayCommentById(CommentService commentService)
 {
     int postId = 5;
     var comment = await commentService.GetCommentByCommentId(postId);
@@ -115,7 +120,7 @@ static async Task GetCommentById(CommentService commentService)
 
 }
 
-static async Task GetAllAlbums(AlbumService albumService)
+static async Task DisplayAllAlbums(AlbumService albumService)
 {
     var albums = await albumService.GetAllAlbumsAsync();
 
@@ -130,7 +135,7 @@ static async Task GetAllAlbums(AlbumService albumService)
     }
 }
 
-static async Task GetAlbumByAlbumId(AlbumService albumService)
+static async Task DisplayAlbumByAlbumId(AlbumService albumService)
 {
     int albumId = 5;
     AlbumDto? album = await albumService.GetAlbumById(albumId);
@@ -142,5 +147,36 @@ static async Task GetAlbumByAlbumId(AlbumService albumService)
     else
     {
         Console.WriteLine($"No album at album ID: {albumId}");
+    }
+}
+
+static async Task DisplayAllPhotos(PhotoService photoService)
+{
+    List<PhotoDto> photos = await photoService.GetAllPhotosAsync();
+    var top10Photos = photos.Take(10);
+    if (photos != null)
+    {
+        foreach (var photo in top10Photos)
+        {
+            Console.WriteLine($"Album ID: {photo.Id} Album Title: {photo.Title}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("No photos to return");
+    }
+}
+
+static async Task DisplayPhotoById(PhotoService photoService)
+{
+    int photoId = 5;
+    PhotoDto photo = await photoService.GetPhotoById(photoId);
+    if (photo != null)
+    {
+        Console.WriteLine($"Photo ID: {photo.Id}, Photo Title: {photo.Title}");
+    }
+    else
+    {
+        Console.WriteLine($"No photo with ID: {photo.Id}");
     }
 }
