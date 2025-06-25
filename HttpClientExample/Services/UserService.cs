@@ -14,17 +14,17 @@ namespace HttpClientExample.Services
             _client = client;
         }
 
-        public async Task<List<UserDTO>> GetAllUsers()
+        public async Task<List<UserDto>> GetAllUsers()
         {
             try
             {
-                var users = await _client.GetFromJsonAsync<List<UserDTO>>(_baseUrl + _endPoint);
-                return users ?? new List<UserDTO>();
+                var users = await _client.GetFromJsonAsync<List<UserDto>>(_baseUrl + _endPoint);
+                return users ?? new List<UserDto>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error getting users: {ex.Message}");
-                return new List<UserDTO>();
+                return new List<UserDto>();
             }
         }
     }

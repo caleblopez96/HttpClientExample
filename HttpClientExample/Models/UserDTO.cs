@@ -2,25 +2,25 @@
 
 namespace HttpClientExample.Models
 {
-    public class UserDTO
+    public class UserDto
     {
         [JsonPropertyName("id")]
-        public int Id { get; set; }
+        public required int Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; } = string.Empty;
+        public required string Name { get; set; }
 
         [JsonPropertyName("username")]
-        public string Username { get; set; } = string.Empty;
+        public required string Username { get; set; }
 
         [JsonPropertyName("email")]
-        public string Email { get; set; } = string.Empty;
+        public required string Email { get; set; }
 
         [JsonPropertyName("phone")]
-        public string Phone { get; set; } = string.Empty;
+        public required string Phone { get; set; }
 
         [JsonPropertyName("website")]
-        public string Website { get; set; } = string.Empty;
+        public string? Website { get; set; }
 
         [JsonPropertyName("address")]
         public AddressDTO? Address { get; set; }
@@ -32,19 +32,19 @@ namespace HttpClientExample.Models
     public class AddressDTO
     {
         [JsonPropertyName("street")]
-        public string Street { get; set; } = string.Empty;
+        public required string Street { get; set; }
 
         [JsonPropertyName("suite")]
-        public string Suite { get; set; } = string.Empty;
+        public string? Suite { get; set; } 
 
         [JsonPropertyName("city")]
-        public string City { get; set; } = string.Empty;
+        public required string City { get; set; }
 
         [JsonPropertyName("zipcode")]
-        public string Zipcode { get; set; } = string.Empty;
+        public required string Zipcode { get; set; }
 
         [JsonPropertyName("geo")]
-        public GeoDTO? Geo { get; set; }
+        public required GeoDTO Geo { get; set; }
     }
 
     public class GeoDTO

@@ -51,12 +51,26 @@ namespace HttpClientExample.Services
             try
             {
                 var photo = await _client.GetFromJsonAsync<PhotoDto>(endpoint);
-                return photo ?? new PhotoDto();
+                return photo ?? new PhotoDto
+                {
+                    AlbumId = 0,
+                    Id = 0,
+                    Title = string.Empty,
+                    Url = string.Empty,
+                    ThumbnailUrl = string.Empty
+                };
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new PhotoDto();
+                return new PhotoDto
+                {
+                    AlbumId = 0,
+                    Id = 0,
+                    Title = string.Empty,
+                    Url = string.Empty,
+                    ThumbnailUrl = string.Empty
+                };
             }
         }
     }

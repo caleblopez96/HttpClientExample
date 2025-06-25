@@ -16,37 +16,37 @@ namespace HttpClientExample.Services
         }
 
 
-        public async Task<List<PostDTO>> GetAllPostAsync()
+        public async Task<List<PostDto>> GetAllPostAsync()
         {
             string endPoint = "/posts";
             try
             {
-                List<PostDTO>? posts = await _client.GetFromJsonAsync<List<PostDTO>>(baseUrl + endPoint);
-                return posts ?? new List<PostDTO>();
+                List<PostDto>? posts = await _client.GetFromJsonAsync<List<PostDto>>(baseUrl + endPoint);
+                return posts ?? new List<PostDto>();
             }
             catch (HttpRequestException ex)
             {
                 Console.WriteLine($"HTTP Error: {ex.Message}");
-                return new List<PostDTO>();
+                return new List<PostDto>();
             }
             catch (JsonException ex)
             {
                 Console.WriteLine($"JSON Error: {ex.Message}");
-                return new List<PostDTO>();
+                return new List<PostDto>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new List<PostDTO>();
+                return new List<PostDto>();
             }
         }
 
-        public async Task<PostDTO?> GetPostByIdAsync(int postId)
+        public async Task<PostDto?> GetPostByIdAsync(int postId)
         {
             string endPoint = $"/posts/{postId}";
             try
             {
-                var post = await _client.GetFromJsonAsync<PostDTO>(baseUrl + endPoint);
+                var post = await _client.GetFromJsonAsync<PostDto>(baseUrl + endPoint);
                 return post;
             }
             catch (HttpRequestException ex)

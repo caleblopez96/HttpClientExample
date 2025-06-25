@@ -52,7 +52,7 @@ Service uses its injected HttpClient to send an HTTP GET request to the configur
 
 HttpClient fetches JSON data from the external API.
 
-The JSON response is deserialized into a list of DTO objects using GetFromJsonAsync<List<UserDTO>>().
+The JSON response is deserialized into a list of DTO objects using GetFromJsonAsync<List<UserDto>>().
 
 The service method returns the typed DTO collection back to the caller.
 

@@ -16,8 +16,8 @@ Method	Endpoint	Description
 [X] GET	/comments/{id}	Get a single comment by ID
 [X] GET	/albums	List all albums
 [X] GET	/albums/{id}	Get a single album by ID
-[] GET	/photos	List all photos
-GET	/photos/{id}	Get a single photo by ID
+[X] GET	/photos	List all photos
+[X] GET	/photos/{id}	Get a single photo by ID
 GET	/todos	List all todos
 GET	/todos/{id}	Get a single todo by ID
 GET	/users	List all users

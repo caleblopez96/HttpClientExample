@@ -170,13 +170,13 @@ static async Task DisplayAllPhotos(PhotoService photoService)
 static async Task DisplayPhotoById(PhotoService photoService)
 {
     int photoId = 5;
-    PhotoDto photo = await photoService.GetPhotoById(photoId);
+    PhotoDto? photo = await photoService.GetPhotoById(photoId);
     if (photo != null)
     {
         Console.WriteLine($"Photo ID: {photo.Id}, Photo Title: {photo.Title}");
     }
     else
     {
-        Console.WriteLine($"No photo with ID: {photo.Id}");
+        Console.WriteLine("No photo found.");
     }
 }
