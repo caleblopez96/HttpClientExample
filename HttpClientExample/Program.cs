@@ -8,12 +8,20 @@ using Serilog;
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
     {
+        // configure this
+        //services.AddHttpClient("JsonPlaceholder", client =>
+        //{
+        //    client.BaseAddress = new Uri("https://jsonplaceholder.typicode.com");
+        //});
+
         // Register services with typed HttpClients
         services.AddHttpClient<UserService>();
         services.AddHttpClient<PostService>();
         services.AddHttpClient<CommentService>();
         services.AddHttpClient<AlbumService>();
         services.AddHttpClient<PhotoService>();
+        services.AddHttpClient<TodoService>();
+
     }).ConfigureLogging(logging =>
     {
         // clear out the default logging
@@ -27,6 +35,7 @@ var postService = host.Services.GetRequiredService<PostService>();
 var commentService = host.Services.GetRequiredService<CommentService>();
 var albumService = host.Services.GetRequiredService<AlbumService>();
 var photoService = host.Services.GetRequiredService<PhotoService>();
+var todoService = host.Services.GetRequiredService<TodoService>();
 
 // Run the app logic
 await DisplayUsersData(userService);
@@ -46,8 +55,14 @@ Console.WriteLine();
 await DisplayAllPhotos(photoService);
 Console.WriteLine();
 await DisplayPhotoById(photoService);
+Console.WriteLine();
+await DisplayAllTodos(todoService);
+Console.WriteLine();
+await DisplayTodosBasedOnStatus(todoService);
 
 // App logic methods
+
+// User data
 static async Task DisplayUsersData(UserService userService)
 {
     var users = await userService.GetAllUsers();
@@ -59,6 +74,7 @@ static async Task DisplayUsersData(UserService userService)
     }
 }
 
+// post data
 static async Task DisplayPostData(PostService postService)
 {
     var posts = await postService.GetAllPostAsync();
@@ -70,7 +86,6 @@ static async Task DisplayPostData(PostService postService)
         Console.WriteLine();
     }
 }
-
 static async Task DisplayPostDataById(PostService postService)
 {
     int postId = 1;
@@ -88,6 +103,7 @@ static async Task DisplayPostDataById(PostService postService)
     }
 }
 
+// comments
 static async Task DisplayComments(CommentService commentService)
 {
     var comments = await commentService.GetAllComments();
@@ -103,7 +119,6 @@ static async Task DisplayComments(CommentService commentService)
         Console.WriteLine();
     }
 }
-
 static async Task DisplayCommentById(CommentService commentService)
 {
     int postId = 5;
@@ -120,6 +135,7 @@ static async Task DisplayCommentById(CommentService commentService)
 
 }
 
+// albums
 static async Task DisplayAllAlbums(AlbumService albumService)
 {
     var albums = await albumService.GetAllAlbumsAsync();
@@ -134,7 +150,6 @@ static async Task DisplayAllAlbums(AlbumService albumService)
         }
     }
 }
-
 static async Task DisplayAlbumByAlbumId(AlbumService albumService)
 {
     int albumId = 5;
@@ -150,6 +165,7 @@ static async Task DisplayAlbumByAlbumId(AlbumService albumService)
     }
 }
 
+// photos
 static async Task DisplayAllPhotos(PhotoService photoService)
 {
     List<PhotoDto> photos = await photoService.GetAllPhotosAsync();
@@ -166,7 +182,6 @@ static async Task DisplayAllPhotos(PhotoService photoService)
         Console.WriteLine("No photos to return");
     }
 }
-
 static async Task DisplayPhotoById(PhotoService photoService)
 {
     int photoId = 5;
@@ -178,5 +193,44 @@ static async Task DisplayPhotoById(PhotoService photoService)
     else
     {
         Console.WriteLine("No photo found.");
+    }
+}
+
+// todos
+static async Task DisplayAllTodos(TodoService todoService)
+{
+    List<TodoDto> todos = await todoService.GetAllTodos();
+    var top10Todos = todos.Take(10);
+    if (todos != null)
+    {
+        foreach (var todo in top10Todos)
+        {
+            Console.WriteLine($"{todo.Id}, {todo.Title}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("No todos");
+    }
+}
+
+static async Task DisplayTodosBasedOnStatus(TodoService todoService)
+{
+    var status = TodoService.TodoStatus.Incomplete;
+    var todos = await todoService.GetTodosBasedOnStatus(status);
+    var top5Todos = todos.Take(5);
+
+    // check for .Any() because the IEnumerable always returns a list(empty or not), so it'll never be null
+    if (top5Todos.Any())
+    {
+        Console.WriteLine($"{status} todos:");
+        foreach (var todo in todos)
+        {
+            Console.WriteLine($"{status}: {todo.Id}, {todo.Title}");
+        }
+    }
+    else
+    {
+        Console.WriteLine($"{status.ToString().ToLower()} todos found.");
     }
 }

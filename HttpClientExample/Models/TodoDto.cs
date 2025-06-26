@@ -20,6 +20,6 @@ namespace HttpClientExample.Models
         public required string Title { get; set; }
 
         [JsonPropertyName("completed")]
-        public required bool Completed { get; set; }
+        public required bool Status { get; set; }
     }
 }

@@ -3,16 +3,11 @@ using HttpClientExample.Models;
 
 namespace HttpClientExample.Services
 {
-    public class UserService
+    public class UserService(HttpClient client)
     {
-        private readonly HttpClient _client;
+        private readonly HttpClient _client = client;
         private readonly string _baseUrl = "https://jsonplaceholder.typicode.com";
         private readonly string _endPoint = "/users";
-
-        public UserService(HttpClient client)
-        {
-            _client = client;
-        }
 
         public async Task<List<UserDto>> GetAllUsers()
         {
