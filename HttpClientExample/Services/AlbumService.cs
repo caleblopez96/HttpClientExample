@@ -9,15 +9,16 @@ using System.Threading.Tasks;
 
 namespace HttpClientExample.Services
 {
-    public class AlbumService
+    public class AlbumService(HttpClient client)
     {
-        private readonly HttpClient _client;
+        private readonly HttpClient _client = client;
         private readonly string baseUrl = "https://jsonplaceholder.typicode.com";
 
-        public AlbumService(HttpClient client)
-        {
-            _client = client;
-        }
+        // using primary constructor instead
+        //public AlbumService(HttpClient client)
+        //{
+        //    _client = client;
+        //}
 
         public async Task<List<AlbumDto>> GetAllAlbumsAsync()
         {
@@ -25,12 +26,12 @@ namespace HttpClientExample.Services
             try
             {
                 var albums = await _client.GetFromJsonAsync<List<AlbumDto>>(baseUrl + endpoint);
-                return albums ?? new List<AlbumDto>();
+                return albums ?? [];
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new List<AlbumDto>();
+                return [];
             }
         }
 

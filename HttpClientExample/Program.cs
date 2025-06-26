@@ -59,6 +59,9 @@ Console.WriteLine();
 await DisplayAllTodos(todoService);
 Console.WriteLine();
 await DisplayTodosBasedOnStatus(todoService);
+Console.WriteLine();
+await DisplayUserById(userService);
+Console.WriteLine();
 
 // App logic methods
 
@@ -71,6 +74,29 @@ static async Task DisplayUsersData(UserService userService)
     {
         Console.WriteLine($"{user.Id}: {user.Name} ({user.Email})");
         Console.WriteLine();
+    }
+}
+static async Task DisplayUserById(UserService userService)
+{
+    int id = 11;
+    try
+    {
+        var user = await userService.GetUserById(id);
+        // If your GetUserById returns a default UserDto when not found, check for a sentinel value
+        if (user == null || user.Id == 0)
+        {
+            Console.WriteLine($"No user found with ID {id}");
+            return;
+        }
+        Console.WriteLine($"User found: {user.Id}, {user.Name}, {user.Email}");
+    }
+    catch (HttpRequestException ex)
+    {
+        Console.WriteLine($"Http Request Exception: {ex.Message}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
     }
 }
 
@@ -86,6 +112,7 @@ static async Task DisplayPostData(PostService postService)
         Console.WriteLine();
     }
 }
+
 static async Task DisplayPostDataById(PostService postService)
 {
     int postId = 1;
@@ -132,7 +159,6 @@ static async Task DisplayCommentById(CommentService commentService)
     {
         Console.WriteLine($"No comment at comment id {postId}");
     }
-
 }
 
 // albums
@@ -150,6 +176,7 @@ static async Task DisplayAllAlbums(AlbumService albumService)
         }
     }
 }
+
 static async Task DisplayAlbumByAlbumId(AlbumService albumService)
 {
     int albumId = 5;
@@ -182,6 +209,7 @@ static async Task DisplayAllPhotos(PhotoService photoService)
         Console.WriteLine("No photos to return");
     }
 }
+
 static async Task DisplayPhotoById(PhotoService photoService)
 {
     int photoId = 5;

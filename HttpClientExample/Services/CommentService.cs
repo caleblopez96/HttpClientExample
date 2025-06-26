@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace HttpClientExample.Services
 {
-    public class CommentService
+    public class CommentService(HttpClient client)
     {
-        readonly HttpClient _client;
+        // using primary constructor
+        readonly HttpClient _client = client;
         readonly string _baseUrl = "https://jsonplaceholder.typicode.com";
 
-        public CommentService(HttpClient client)
-        {
-            _client = client;
-        }
+        // using primary constructor instead
+        //public CommentService(HttpClient client)
+        //{
+        //    _client = client;
+        //}
 
         public async Task<List<CommentDto>> GetAllComments()
         {
@@ -23,22 +25,26 @@ namespace HttpClientExample.Services
             try
             {
                 List<CommentDto>? comments = await _client.GetFromJsonAsync<List<CommentDto>>(_baseUrl + _endpoint);
-                return comments ?? new List<CommentDto>();
+                //return comments ?? new List<CommentDto>();
+                return comments ?? [];
             }
             catch (HttpRequestException ex)
             {
                 Console.WriteLine($"HTTP Error: {ex.Message}");
-                return new List<CommentDto>();
+                //return new List<CommentDto>();
+                return [];
             }
             catch (JsonException ex)
             {
                 Console.WriteLine($"Json Error: {ex.Message}");
-                return new List<CommentDto>();
+                //return new List<CommentDto>();
+                return [];
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new List<CommentDto>();
+                //return new List<CommentDto>();
+                return [];
             }
         }
 

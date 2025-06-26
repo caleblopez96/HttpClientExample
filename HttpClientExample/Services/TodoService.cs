@@ -6,8 +6,15 @@ namespace HttpClientExample.Services
 {
     public class TodoService(HttpClient client)
     {
+        // using primary constructor
         private readonly HttpClient _client = client;
         private readonly string baseUrl = "https://jsonplaceholder.typicode.com";
+
+        // using primary constructor instead
+        //public TodoService(HttpClient client)
+        //{
+        //    _client = client;
+        //}
 
         public enum TodoStatus
         {

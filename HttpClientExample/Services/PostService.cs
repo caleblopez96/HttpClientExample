@@ -5,15 +5,17 @@ using HttpClientExample.Models;
 
 namespace HttpClientExample.Services
 {
-    public class PostService
+    public class PostService(HttpClient client)
     {
-        readonly HttpClient _client = new();
-        string baseUrl = "https://jsonplaceholder.typicode.com";
+        // using primary constructor
+        readonly HttpClient _client = client;
+        readonly string baseUrl = "https://jsonplaceholder.typicode.com";
 
-        public PostService(HttpClient client)
-        {
-            _client = client;
-        }
+        // using primary constructor instead
+        //public PostService(HttpClient client)
+        //{
+        //    _client = client;
+        //}
 
 
         public async Task<List<PostDto>> GetAllPostAsync()
@@ -22,22 +24,26 @@ namespace HttpClientExample.Services
             try
             {
                 List<PostDto>? posts = await _client.GetFromJsonAsync<List<PostDto>>(baseUrl + endPoint);
-                return posts ?? new List<PostDto>();
+                //return posts ?? new List<PostDto>();
+                return posts ?? [];
             }
             catch (HttpRequestException ex)
             {
                 Console.WriteLine($"HTTP Error: {ex.Message}");
-                return new List<PostDto>();
+                //return new List<PostDto>();
+                return [];
             }
             catch (JsonException ex)
             {
                 Console.WriteLine($"JSON Error: {ex.Message}");
-                return new List<PostDto>();
+                //return new List<PostDto>();
+                return [];
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new List<PostDto>();
+                //return new List<PostDto>();
+                return [];
             }
         }
 

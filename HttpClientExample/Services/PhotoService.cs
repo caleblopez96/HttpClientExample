@@ -9,15 +9,17 @@ using System.Threading.Tasks;
 
 namespace HttpClientExample.Services
 {
-    public class PhotoService
+    public class PhotoService(HttpClient client)
     {
-        private readonly HttpClient _client;
+        // using primary constructor
+        private readonly HttpClient _client = client;
         private readonly string baseUrl = "https://jsonplaceholder.typicode.com";
 
-        public PhotoService(HttpClient client)
-        {
-            _client = client;
-        }
+        // using primary constructor instead
+        //public PhotoService(HttpClient client)
+        //{
+        //    _client = client;
+        //}
 
         public async Task<List<PhotoDto>> GetAllPhotosAsync()
         {
@@ -25,22 +27,22 @@ namespace HttpClientExample.Services
             try
             {
                 var photos = await _client.GetFromJsonAsync<List<PhotoDto>>(baseUrl + endpoint);
-                return photos ?? new List<PhotoDto>();
+                return photos ?? [];
             }
             catch (HttpRequestException ex)
             {
                 Console.WriteLine($"HTTP Request Error {ex.Message}");
-                return new List<PhotoDto>();
+                return [];
             }
             catch (JsonException ex)
             {
                 Console.WriteLine($"Error Parsing JSON: {ex.Message}");
-                return new List<PhotoDto>();
+                return [];
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                return new List<PhotoDto>();
+                return [];
             }
         }
 
