@@ -8,12 +8,6 @@ using Serilog;
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((_, services) =>
     {
-        // configure this
-        //services.AddHttpClient("JsonPlaceholder", client =>
-        //{
-        //    client.BaseAddress = new Uri("https://jsonplaceholder.typicode.com");
-        //});
-
         // Register services with typed HttpClients
         services.AddHttpClient<UserService>();
         services.AddHttpClient<PostService>();
@@ -21,8 +15,8 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddHttpClient<AlbumService>();
         services.AddHttpClient<PhotoService>();
         services.AddHttpClient<TodoService>();
-
-    }).ConfigureLogging(logging =>
+    })
+    .ConfigureLogging(logging =>
     {
         // clear out the default logging
         logging.ClearProviders();
@@ -78,11 +72,10 @@ static async Task DisplayUsersData(UserService userService)
 }
 static async Task DisplayUserById(UserService userService)
 {
-    int id = 11;
+    int id = 1;
     try
     {
         var user = await userService.GetUserById(id);
-        // If your GetUserById returns a default UserDto when not found, check for a sentinel value
         if (user == null || user.Id == 0)
         {
             Console.WriteLine($"No user found with ID {id}");
