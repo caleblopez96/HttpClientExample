@@ -1,25 +1,24 @@
 ﻿using System.Net.Http.Json;
 using HttpClientExample.Models;
+using System.Data;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace HttpClientExample.Services
 {
-    public class UserService(HttpClient client)
+    public class UserService(HttpClient client, IConfiguration configuration)
     {
-        // using primary constructor
         private readonly HttpClient _client = client;
+        private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection");
         private readonly string _baseUrl = "https://jsonplaceholder.typicode.com";
         private readonly string _endPoint = "/users";
-
-        // using primary constructor instead
-        //public UserService(HttpClient client)
-        //{
-        //    _client = client;
-        //}
 
         public async Task<List<UserDto>> GetAllUsers()
         {
             try
             {
+                // Fixed: changed *client and *baseUrl to _client and _baseUrl
                 var users = await _client.GetFromJsonAsync<List<UserDto>>(_baseUrl + _endPoint);
                 return users ?? [];
             }
@@ -56,6 +55,26 @@ namespace HttpClientExample.Services
                     Email = string.Empty,
                     Phone = string.Empty
                 };
+            }
+        }
+
+        // Dapper example: fetch all users from the database
+        public async Task<List<UserDto>> GetAllUsersFromDbAsync()
+        {
+            try
+            {
+                using var connection = new SqlConnection(_connectionString);
+                const string sql = @"
+                    SELECT Id, Name, Username, Email, Phone
+                    FROM Users
+                ";
+                var users = await connection.QueryAsync<UserDto>(sql);
+                return users.ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database error: {ex.Message}");
+                return [];
             }
         }
     }

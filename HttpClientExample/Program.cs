@@ -4,9 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
 
 var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices((_, services) =>
+    .ConfigureServices((context, services) =>
     {
         // Register services with typed HttpClients
         services.AddHttpClient<UserService>();
@@ -15,6 +18,14 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddHttpClient<AlbumService>();
         services.AddHttpClient<PhotoService>();
         services.AddHttpClient<TodoService>();
+
+        // Register IDbConnection for Dapper
+        services.AddTransient<IDbConnection>(sp =>
+        {
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            return new SqlConnection(connectionString);
+        });
     })
     .ConfigureLogging(logging =>
     {
@@ -56,6 +67,7 @@ await DisplayTodosBasedOnStatus(todoService);
 Console.WriteLine();
 await DisplayUserById(userService);
 Console.WriteLine();
+await DisplayUsersFromDb(userService);
 
 // App logic methods
 
@@ -253,5 +265,17 @@ static async Task DisplayTodosBasedOnStatus(TodoService todoService)
     else
     {
         Console.WriteLine($"{status.ToString().ToLower()} todos found.");
+    }
+}
+
+// db testing
+static async Task DisplayUsersFromDb(UserService userService)
+{
+    var users = await userService.GetAllUsersFromDbAsync();
+    Console.WriteLine($"[Dapper] Retrieved {users.Count} users from the database\n");
+    foreach (var user in users)
+    {
+        Console.WriteLine($"{user.Id}: {user.Name} ({user.Email})");
+        Console.WriteLine();
     }
 }
