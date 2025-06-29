@@ -43,31 +43,34 @@ var photoService = host.Services.GetRequiredService<PhotoService>();
 var todoService = host.Services.GetRequiredService<TodoService>();
 
 // Run the app logic
-await DisplayUsersData(userService);
-Console.WriteLine();
-await DisplayPostData(postService);
-Console.WriteLine();
-await DisplayPostDataById(postService);
-Console.WriteLine();
-await DisplayComments(commentService);
-Console.WriteLine();
-await DisplayCommentById(commentService);
-Console.WriteLine();
-await DisplayAllAlbums(albumService);
-Console.WriteLine();
-await DisplayAlbumByAlbumId(albumService);
-Console.WriteLine();
-await DisplayAllPhotos(photoService);
-Console.WriteLine();
-await DisplayPhotoById(photoService);
-Console.WriteLine();
-await DisplayAllTodos(todoService);
-Console.WriteLine();
-await DisplayTodosBasedOnStatus(todoService);
-Console.WriteLine();
-await DisplayUserById(userService);
-Console.WriteLine();
+//await DisplayUsersData(userService);
+//Console.WriteLine();
+//await DisplayPostData(postService);
+//Console.WriteLine();
+//await DisplayPostDataById(postService);
+//Console.WriteLine();
+//await DisplayComments(commentService);
+//Console.WriteLine();
+//await DisplayCommentById(commentService);
+//Console.WriteLine();
+//await DisplayAllAlbums(albumService);
+//Console.WriteLine();
+//await DisplayAlbumByAlbumId(albumService);
+//Console.WriteLine();
+//await DisplayAllPhotos(photoService);
+//Console.WriteLine();
+//await DisplayPhotoById(photoService);
+//Console.WriteLine();
+//await DisplayAllTodos(todoService);
+//Console.WriteLine();
+//await DisplayTodosBasedOnStatus(todoService);
+//Console.WriteLine();
+//await DisplayUserById(userService);
+//Console.WriteLine();
 await DisplayUsersFromDb(userService);
+Console.WriteLine();
+await userService.CompareUsersFromDbAndApi();
+Console.WriteLine();
 
 // App logic methods
 

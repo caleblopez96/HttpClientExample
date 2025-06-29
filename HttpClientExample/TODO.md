@@ -24,3 +24,6 @@ GET	/users	List all users
 GET	/users/{id}	Get a single user by ID
 
 [] Incorporate Serilogger
+
+[X] connect to database using dapper
+[] sync all users from jsonplaceholder to users table
