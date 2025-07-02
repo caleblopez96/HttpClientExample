@@ -71,6 +71,8 @@ await DisplayUsersFromDb(userService);
 Console.WriteLine();
 await userService.CompareUsersFromDbAndApi();
 Console.WriteLine();
+await DisplayAndSaveComments(commentService);
+
 
 // App logic methods
 
@@ -281,4 +283,13 @@ static async Task DisplayUsersFromDb(UserService userService)
         Console.WriteLine($"{user.Id}: {user.Name} ({user.Email})");
         Console.WriteLine();
     }
+}
+
+static async Task DisplayAndSaveComments(CommentService commentService)
+{
+    var comments = await commentService.GetAllComments();
+    Console.WriteLine($"Retrieved {comments.Count} comments");
+
+    await commentService.InsertCommentsIntoDb(comments);
+    Console.WriteLine("Comments inserted into db");
 }

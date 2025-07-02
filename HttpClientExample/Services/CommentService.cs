@@ -1,4 +1,7 @@
-﻿using HttpClientExample.Models;
+﻿using Dapper;
+using HttpClientExample.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Net.Http.Json;
@@ -7,11 +10,12 @@ using System.Threading.Tasks;
 
 namespace HttpClientExample.Services
 {
-    public class CommentService(HttpClient client)
+    public class CommentService(HttpClient client, IConfiguration configuration)
     {
         // using primary constructor
         readonly HttpClient _client = client;
         readonly string _baseUrl = "https://jsonplaceholder.typicode.com";
+        private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection");
 
         // using primary constructor instead
         //public CommentService(HttpClient client)
@@ -71,6 +75,23 @@ namespace HttpClientExample.Services
                 Console.WriteLine($"Error: {ex.Message}");
                 return new CommentDto();
             }
+        }
+
+        // out of workflow method, but this is created
+        // to populate the db with comments because nothing is there
+        public async Task InsertCommentsIntoDb(List<CommentDto> comments)
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            const string insertQuery = @"INSERT INTO Comments(Id, PostId, Name, Email, Body)
+                                         VALUES (@Id, @PostId, @Name, @Email, @Body);";
+
+
+            foreach (var comment in comments)
+            {
+                await connection.ExecuteAsync(insertQuery, comment);
+            }
+            Console.WriteLine($"Inserted {comments.Count} comments");
         }
     }
 }

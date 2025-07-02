@@ -27,3 +27,5 @@ GET	/users/{id}	Get a single user by ID
 
 [X] connect to database using dapper
 [] sync all users from jsonplaceholder to users table
+[] figure out how to flatten dto into one object and then how to insert it into db. 
+rn the way i have my db set up and the way the dto is arent the same. need to create a mapper or something.

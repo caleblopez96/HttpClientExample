@@ -107,7 +107,7 @@ namespace HttpClientExample.Services
             }
 
             // insert the user into db if they dont exist
-            if (inApiNotDb.Any())
+            if (inApiNotDb.Count == 0)
             {
                 using var connection = new SqlConnection(_connectionString);
                 const string insertQuery = @"
