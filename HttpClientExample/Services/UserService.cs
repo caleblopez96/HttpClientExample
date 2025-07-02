@@ -114,7 +114,7 @@ namespace HttpClientExample.Services
                     INSERT INTO Users (Id, Name, Username, Email, Phone)
                     VALUES (@Id, @Name, @Username, @Email, @Phone);
                 ";
-
+                
                 foreach (var user in inApiNotDb)
                 {
                     var parameters = new
@@ -129,6 +129,8 @@ namespace HttpClientExample.Services
                     Console.WriteLine($"Inserted user {user.Id}: {user.Name} ({user.Email}) into DB.");
                 }
             }
+
+            Console.WriteLine("no users to insert");
 
 
             var commonIds = dbUserIds.Intersect(apiUserIds);

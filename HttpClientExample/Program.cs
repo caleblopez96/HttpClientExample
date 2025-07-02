@@ -67,11 +67,12 @@ var todoService = host.Services.GetRequiredService<TodoService>();
 //Console.WriteLine();
 //await DisplayUserById(userService);
 //Console.WriteLine();
-await DisplayUsersFromDb(userService);
-Console.WriteLine();
-await userService.CompareUsersFromDbAndApi();
-Console.WriteLine();
-await DisplayAndSaveComments(commentService);
+//await DisplayUsersFromDb(userService);
+//Console.WriteLine();
+//await userService.CompareUsersFromDbAndApi();
+//Console.WriteLine();
+//await DisplayAndSaveComments(commentService);
+await DisplayAllDbComments(commentService);
 
 
 // App logic methods
@@ -143,7 +144,7 @@ static async Task DisplayPostDataById(PostService postService)
 // comments
 static async Task DisplayComments(CommentService commentService)
 {
-    var comments = await commentService.GetAllComments();
+    var comments = await commentService.GetAllCommentsFromApi();
     var top10Comments = comments.Take(10);
     Console.WriteLine("First 10 Comments");
     Console.WriteLine();
@@ -156,20 +157,20 @@ static async Task DisplayComments(CommentService commentService)
         Console.WriteLine();
     }
 }
-static async Task DisplayCommentById(CommentService commentService)
-{
-    int postId = 5;
-    var comment = await commentService.GetCommentByCommentId(postId);
-    if (comment != null)
-    {
-        Console.WriteLine($"CommentId: {comment.Id}");
-        Console.WriteLine($"Comment: {comment.Body}");
-    }
-    else
-    {
-        Console.WriteLine($"No comment at comment id {postId}");
-    }
-}
+//static async Task DisplayCommentById(CommentService commentService)
+//{
+//    int postId = 5;
+//    var comment = await commentService.GetCommentByCommentId(postId);
+//    if (comment != null)
+//    {
+//        Console.WriteLine($"CommentId: {comment.Id}");
+//        Console.WriteLine($"Comment: {comment.Body}");
+//    }
+//    else
+//    {
+//        Console.WriteLine($"No comment at comment id {postId}");
+//    }
+//}
 
 // albums
 static async Task DisplayAllAlbums(AlbumService albumService)
@@ -285,11 +286,18 @@ static async Task DisplayUsersFromDb(UserService userService)
     }
 }
 
-static async Task DisplayAndSaveComments(CommentService commentService)
+static async Task DisplayCommentsFromApi(CommentService commentService)
 {
-    var comments = await commentService.GetAllComments();
+    var comments = await commentService.GetAllCommentsFromApi();
     Console.WriteLine($"Retrieved {comments.Count} comments");
+}
 
-    await commentService.InsertCommentsIntoDb(comments);
-    Console.WriteLine("Comments inserted into db");
+static async Task DisplayAllDbComments(CommentService commentService)
+{
+    var comments = await commentService.GetAllCommentsFromDb();
+    Console.WriteLine($"Retrieved {comments.Count} from the db");
+    foreach (var comment in comments)
+    {
+        Console.WriteLine($"Comment ID: {comment.Id}, Comment Body: {comment.Body}");
+    }
 }
