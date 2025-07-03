@@ -15,7 +15,8 @@ namespace HttpClientExample.Services
         private readonly string _baseUrl = "https://jsonplaceholder.typicode.com";
         private readonly string _usersEndPoint = "/users";
 
-        public async Task<List<UserDto>> GetAllUsers()
+        // get all users from api
+        public async Task<List<UserDto>> GetAllUsersFromApi()
         {
             try
             {
@@ -29,38 +30,8 @@ namespace HttpClientExample.Services
             }
         }
 
-        // get user from api by id
-        public async Task<UserDto> GetUserById(int id)
-        { 
-            string endpoint = $"{_baseUrl}/{_usersEndPoint}/{id}";
-            try
-            {
-                var user = await _client.GetFromJsonAsync<UserDto>(endpoint);
-                return user ?? new UserDto
-                {
-                    Id = 0,
-                    Name = string.Empty,
-                    Username = string.Empty,
-                    Email = string.Empty,
-                    Phone = string.Empty
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                return new UserDto
-                {
-                    Id = 0,
-                    Name = string.Empty,
-                    Username = string.Empty,
-                    Email = string.Empty,
-                    Phone = string.Empty
-                };
-            }
-        }
-
         // get all users from the database
-        public async Task<List<UserDto>> GetAllUsersFromDbAsync()
+        public async Task<List<UserDto>> GetAllUsersFromDb()
         {
             try
             {
@@ -83,8 +54,8 @@ namespace HttpClientExample.Services
         public async Task CompareUsersFromDbAndApi()
         {
             // get users from the db and api
-            var dbUsers = await GetAllUsersFromDbAsync();
-            var apiUsers = await GetAllUsers();
+            var dbUsers = await GetAllUsersFromDb();
+            var apiUsers = await GetAllUsersFromApi();
 
             // get ids of db and api users and put them into a hashset
             var dbUserIds = dbUsers.Select(u => u.Id).ToHashSet();
@@ -132,7 +103,7 @@ namespace HttpClientExample.Services
 
             Console.WriteLine("no users to insert");
 
-
+            // update
             var commonIds = dbUserIds.Intersect(apiUserIds);
             foreach (var id in commonIds)
             {
@@ -145,6 +116,36 @@ namespace HttpClientExample.Services
                     Console.WriteLine($"  DB:  {dbUser.Name}, {dbUser.Email}");
                     Console.WriteLine($"  API: {apiUser.Name}, {apiUser.Email}");
                 }
+            }
+        }
+
+        // get user from api by id
+        public async Task<UserDto> GetUserById(int id)
+        {
+            string endpoint = $"{_baseUrl}/{_usersEndPoint}/{id}";
+            try
+            {
+                var user = await _client.GetFromJsonAsync<UserDto>(endpoint);
+                return user ?? new UserDto
+                {
+                    Id = 0,
+                    Name = string.Empty,
+                    Username = string.Empty,
+                    Email = string.Empty,
+                    Phone = string.Empty
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return new UserDto
+                {
+                    Id = 0,
+                    Name = string.Empty,
+                    Username = string.Empty,
+                    Email = string.Empty,
+                    Phone = string.Empty
+                };
             }
         }
     }

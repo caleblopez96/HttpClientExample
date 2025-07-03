@@ -69,26 +69,37 @@ var todoService = host.Services.GetRequiredService<TodoService>();
 //Console.WriteLine();
 //await DisplayUsersFromDb(userService);
 //Console.WriteLine();
+//await DisplayAllUsersFromApi(userService);
+//Console.WriteLine();
 //await userService.CompareUsersFromDbAndApi();
 //Console.WriteLine();
 //await DisplayAndSaveComments(commentService);
-await DisplayAllDbComments(commentService);
+//Console.WriteLine();
+//await DisplayAllCommentsFromDb(commentService);
+//Console.WriteLine();
+//await InsertAlbumsIntoDb(albumService);
+//Console.WriteLine();
+//await DisplayAllAlbumsFromDb(albumService);
+//await TestSyncComments(commentService);
+
+
 
 
 // App logic methods
 
 // User data
-static async Task DisplayUsersData(UserService userService)
+/*static async Task DisplayUsersData(UserService userService)
 {
-    var users = await userService.GetAllUsers();
+    var users = await userService.GetAllUsersFromApi();
     Console.WriteLine($"Retrieved {users.Count} users\n");
     foreach (var user in users)
     {
         Console.WriteLine($"{user.Id}: {user.Name} ({user.Email})");
         Console.WriteLine();
     }
-}
-static async Task DisplayUserById(UserService userService)
+}*/
+
+/*static async Task DisplayUserById(UserService userService)
 {
     int id = 1;
     try
@@ -109,10 +120,10 @@ static async Task DisplayUserById(UserService userService)
     {
         Console.WriteLine($"Error: {ex.Message}");
     }
-}
+}*/
 
 // post data
-static async Task DisplayPostData(PostService postService)
+/*static async Task DisplayPostData(PostService postService)
 {
     var posts = await postService.GetAllPostAsync();
     var topPosts = posts.Take(5);
@@ -122,9 +133,9 @@ static async Task DisplayPostData(PostService postService)
         Console.WriteLine($"Post {post.Id}: {post.Title} - {post.Body}");
         Console.WriteLine();
     }
-}
+}*/
 
-static async Task DisplayPostDataById(PostService postService)
+/*static async Task DisplayPostDataById(PostService postService)
 {
     int postId = 1;
     var post = await postService.GetPostByIdAsync(postId);
@@ -140,9 +151,10 @@ static async Task DisplayPostDataById(PostService postService)
         Console.WriteLine($"No post found by postId {postId}");
     }
 }
+*/
 
 // comments
-static async Task DisplayComments(CommentService commentService)
+/*static async Task DisplayComments(CommentService commentService)
 {
     var comments = await commentService.GetAllCommentsFromApi();
     var top10Comments = comments.Take(10);
@@ -156,26 +168,28 @@ static async Task DisplayComments(CommentService commentService)
         Console.WriteLine($"Post Body: {comment.Body}");
         Console.WriteLine();
     }
+}*/
+
+/*static async Task DisplayCommentById(CommentService commentService)
+{
+    int postId = 5;
+    var comment = await commentService.GetCommentByCommentId(postId);
+    if (comment != null)
+    {
+        Console.WriteLine($"CommentId: {comment.Id}");
+        Console.WriteLine($"Comment: {comment.Body}");
+    }
+    else
+    {
+        Console.WriteLine($"No comment at comment id {postId}");
+    }
 }
-//static async Task DisplayCommentById(CommentService commentService)
-//{
-//    int postId = 5;
-//    var comment = await commentService.GetCommentByCommentId(postId);
-//    if (comment != null)
-//    {
-//        Console.WriteLine($"CommentId: {comment.Id}");
-//        Console.WriteLine($"Comment: {comment.Body}");
-//    }
-//    else
-//    {
-//        Console.WriteLine($"No comment at comment id {postId}");
-//    }
-//}
+*/
 
 // albums
-static async Task DisplayAllAlbums(AlbumService albumService)
+/*static async Task DisplayAllAlbums(AlbumService albumService)
 {
-    var albums = await albumService.GetAllAlbumsAsync();
+    var albums = await albumService.GetAllAlbumsFromApi();
 
     if (albums != null)
     {
@@ -186,9 +200,9 @@ static async Task DisplayAllAlbums(AlbumService albumService)
             Console.WriteLine($"Album: {album.Title}");
         }
     }
-}
+}*/
 
-static async Task DisplayAlbumByAlbumId(AlbumService albumService)
+/*static async Task DisplayAlbumByAlbumId(AlbumService albumService)
 {
     int albumId = 5;
     AlbumDto? album = await albumService.GetAlbumById(albumId);
@@ -202,9 +216,10 @@ static async Task DisplayAlbumByAlbumId(AlbumService albumService)
         Console.WriteLine($"No album at album ID: {albumId}");
     }
 }
+*/
 
 // photos
-static async Task DisplayAllPhotos(PhotoService photoService)
+/*static async Task DisplayAllPhotos(PhotoService photoService)
 {
     List<PhotoDto> photos = await photoService.GetAllPhotosAsync();
     var top10Photos = photos.Take(10);
@@ -219,9 +234,9 @@ static async Task DisplayAllPhotos(PhotoService photoService)
     {
         Console.WriteLine("No photos to return");
     }
-}
+} */
 
-static async Task DisplayPhotoById(PhotoService photoService)
+/* static async Task DisplayPhotoById(PhotoService photoService)
 {
     int photoId = 5;
     PhotoDto? photo = await photoService.GetPhotoById(photoId);
@@ -234,9 +249,10 @@ static async Task DisplayPhotoById(PhotoService photoService)
         Console.WriteLine("No photo found.");
     }
 }
+*/
 
 // todos
-static async Task DisplayAllTodos(TodoService todoService)
+/*static async Task DisplayAllTodos(TodoService todoService)
 {
     List<TodoDto> todos = await todoService.GetAllTodos();
     var top10Todos = todos.Take(10);
@@ -252,8 +268,9 @@ static async Task DisplayAllTodos(TodoService todoService)
         Console.WriteLine("No todos");
     }
 }
+*/
 
-static async Task DisplayTodosBasedOnStatus(TodoService todoService)
+/*static async Task DisplayTodosBasedOnStatus(TodoService todoService)
 {
     var status = TodoService.TodoStatus.Incomplete;
     var todos = await todoService.GetTodosBasedOnStatus(status);
@@ -272,12 +289,12 @@ static async Task DisplayTodosBasedOnStatus(TodoService todoService)
     {
         Console.WriteLine($"{status.ToString().ToLower()} todos found.");
     }
-}
+}*/
 
 // db testing
-static async Task DisplayUsersFromDb(UserService userService)
+/*static async Task DisplayUsersFromDb(UserService userService)
 {
-    var users = await userService.GetAllUsersFromDbAsync();
+    var users = await userService.GetAllUsersFromDb();
     Console.WriteLine($"[Dapper] Retrieved {users.Count} users from the database\n");
     foreach (var user in users)
     {
@@ -285,14 +302,22 @@ static async Task DisplayUsersFromDb(UserService userService)
         Console.WriteLine();
     }
 }
+*/
 
-static async Task DisplayCommentsFromApi(CommentService commentService)
+/*static async Task DisplayAllUsersFromApi(UserService userService)
+{
+    var users = await userService.GetAllUsersFromApi();
+    Console.WriteLine($"Retrieved {users.Count} users from API");
+}*/
+
+/*static async Task DisplayAllCommentsFromApi(CommentService commentService)
 {
     var comments = await commentService.GetAllCommentsFromApi();
     Console.WriteLine($"Retrieved {comments.Count} comments");
 }
+*/
 
-static async Task DisplayAllDbComments(CommentService commentService)
+/*static async Task DisplayAllCommentsFromDb(CommentService commentService)
 {
     var comments = await commentService.GetAllCommentsFromDb();
     Console.WriteLine($"Retrieved {comments.Count} from the db");
@@ -300,4 +325,32 @@ static async Task DisplayAllDbComments(CommentService commentService)
     {
         Console.WriteLine($"Comment ID: {comment.Id}, Comment Body: {comment.Body}");
     }
+}*/
+
+/*static async Task DisplayAllAlbumsFromDb(AlbumService albumService)
+{
+    var albums = await albumService.GetAllAlbumsFromDb();
+    foreach (var album in albums)
+    {
+        Console.WriteLine($"Album: {album.Title}");
+        Console.WriteLine($"Id: {album.Id}");
+        Console.WriteLine($"UserId: {album.UserId}");
+    }
+}*/
+
+// syncing test
+/*static async Task TestSyncComments(CommentService commentService)
+{
+    await commentService.SyncCommentsWithApi();
+}*/
+
+// populating db tables
+/*static async Task InsertAlbumsIntoDb(AlbumService albumService)
+{
+    var albums = await albumService.GetAllAlbumsFromApi();
+
+    var insertedAlbums = await albumService.InsertAlbumbsIntoDb(albums);
+
+    Console.WriteLine($"Inserted {insertedAlbums.Count} albums into the database.");
 }
+*/

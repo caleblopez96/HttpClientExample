@@ -59,7 +59,7 @@ namespace HttpClientExample.Services
             using var connection = new SqlConnection(_connectionString);
             string query = @"SELECT Id, PostId, Name, Email, Body
                              FROM Comments";
-            var dbComments = await connection.QueryAsync<CommentDto>(query);
+            IEnumerable<CommentDto> dbComments = await connection.QueryAsync<CommentDto>(query);
             return dbComments.ToList();
         }
 
@@ -105,8 +105,8 @@ namespace HttpClientExample.Services
         public async Task SyncCommentsWithApi()
         {
             // get comments from the api & db
-            var apiComments = await GetAllCommentsFromApi();
-            var dbComments = await GetAllCommentsFromDb();
+            List<CommentDto> apiComments = await GetAllCommentsFromApi();
+            List<CommentDto> dbComments = await GetAllCommentsFromDb();
 
             var newComments = new List<CommentDto>();
             var updatedComments = new List<CommentDto>();
@@ -134,32 +134,32 @@ namespace HttpClientExample.Services
             }
         }
 
+        // api call practice. not a method used for syncing
+        /*public async Task<CommentDto> GetCommentByCommentId(int commentId)
+        {
+            string endpoint = $"/comments/{commentId}";
+            try
+            {
+                CommentDto? comment = await _client.GetFromJsonAsync<CommentDto>(_baseUrl + endpoint);
+                return comment ?? new CommentDto();
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP Error: {ex.Message}");
+                return new CommentDto();
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON Error: {ex.Message}");
+                return new CommentDto();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return new CommentDto();
+            }
+        }
+        */
     }
 }
-        // api call practice. not a method used for syncing
-//        public async Task<CommentDto> GetCommentByCommentId(int commentId)
-//        {
-//            string endpoint = $"/comments/{commentId}";
-//            try
-//            {
-//                CommentDto? comment = await _client.GetFromJsonAsync<CommentDto>(_baseUrl + endpoint);
-//                return comment ?? new CommentDto();
-//            }
-//            catch (HttpRequestException ex)
-//            {
-//                Console.WriteLine($"HTTP Error: {ex.Message}");
-//                return new CommentDto();
-//            }
-//            catch (JsonException ex)
-//            {
-//                Console.WriteLine($"JSON Error: {ex.Message}");
-//                return new CommentDto();
-//            }
-//            catch (Exception ex)
-//            {
-//                Console.WriteLine($"Error: {ex.Message}");
-//                return new CommentDto();
-//            }
-//        }
-//    }
-//}
+
