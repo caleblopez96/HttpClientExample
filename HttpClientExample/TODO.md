@@ -1,15 +1,6 @@
-Possible Next Steps / Enhancements
-Add configuration support (e.g., base URLs in appsettings.json).
+﻿API Method Practice:
 
-Add error handling and retry policies in HttpClient registrations.
-
-Introduce a repository or domain layer if business logic grows.
-
-Add unit tests mocking the services and HttpClient.
-
-Use IHostedService to run background tasks if needed.
-
-Method	Endpoint	Description
+API and Endpoints:
 [X] GET	/posts	List all posts
 [X] GET	/posts/{id}	Get a single post by ID
 [X] GET	/comments	List all comments
@@ -23,81 +14,77 @@ Method	Endpoint	Description
 [X] GET	/users	List all users
 [X] GET	/users/{id}	Get a single user by ID
 
+Incorporate Logging:
 [] Incorporate Serilogger
 
+Connect to DB:
 [X] connect to database using dapper
-[] sync all users from jsonplaceholder to users table
-[] figure out how to flatten dto into one object and then how to insert it into db. 
-rn the way i have my db set up and the way the dto is arent the same. need to create a mapper or something.
 
 **HIGH LEVEL OVERVIEW**
-Per each service:
-1.	[] Insert Data from Api Into the DB
-		[] establish a connection to the db
-	    [] Write insert query
-	    [] Foreach object inside the collection, execute the query on it
-	    [] return the result (its needed for other functions)
-	
-1.	[] Get Data From Api
-		[] Hit endpoint
-		[] Get the json response and desearialize (using GetFromJsonAsync())
-		[] Handle exceptions
 
+# Service Build Checklist
 
-[X] Comment service
-	[X] get data from api
-	[X] get data from db
-	[X] insert data (to be used in sync and to popluate table)
-	[X] update data ()
-	[X] helper method to check if objects are equal
-	[X] sync method
+**For each service (Comments, Users, Albums, Photos, Posts, Todos):**
 
-[] User service
-	[] get data from api
-	[] get data from db
-	[] insert data (to be used in sync and to popluate table)
-		[] get all objects from db
-		[] call the insertintodb func for that service using objects as args
-	[] update data ()
-	[] helper method to check if objects are equal
-	[] sync method
+## Core Methods  
+`GetDataFromApi()`
+- [ ] **Get Data From API**
+  - [ ] Define API endpoint  
+  - [ ] Fetch JSON data using `GetFromJsonAsync()`  
+  - [ ] Handle exceptions  
 
-[] Album Service (still need to insert data into db)
-	[X] get data from api
-	[X] get data from db
-	[X] insert data (to be used in sync and to popluate table)
-	[] update data ()
-	[X] helper method to check if objects are equal
-	[X] sync method
+`GetDataFromDb()`
+- [ ] **Get Data From DB**
+  - [ ] Establish DB connection  
+  - [ ] Write `SELECT` query  
+  - [ ] Await query result  
+  - [ ] Return as list  
 
-[] Photo Service (still need to insert data into db )
-	[] get data from api
-	[] get data from db
-	[] insert data (to be used in sync and to popluate table)
-	[] update data ()
-	[] helper method to check if objects are equal
-	[] sync method
+`InsertDataIntoDb()`
+- [ ] **Insert Data Into DB**
+  - [ ] Establish DB connection  
+  - [ ] Write `INSERT` query  
+  - [ ] Loop through collection  
+  - [ ] Execute query per object  
+  - [ ] Return inserted objects  
 
-[] Post Service (still need to insert data into db)
-	[] get data from api
-	[] get data from db
-	[] insert data (to be used in sync and to popluate table)
-	[] update data ()
-	[] helper method to check if objects are equal
-	[] sync method
+`UpdateDataInDb()`
+- [ ] **Update Data In DB**
+  - [ ] Establish DB connection  
+  - [ ] Write `UPDATE` query  
+  - [ ] Loop through collection  
+  - [ ] Execute query per object  
 
-[] Todo Service (still need to insert data into db)
-	[] get data from api
-	[] get data from db
-	[] insert data (to be used in sync and to popluate table)
-	[] update data ()
-	[] helper method to check if objects are equal
-	[] sync method
+`DeleteFromDb()`
+- [ ] **Delete Data From DB** *(if needed for full sync)*
+  - [ ] Establish DB connection  
+  - [ ] Write `DELETE` query  
+  - [ ] Execute query  
 
-[] User Service (still need to insert data into db)
-	[] get data from api
-	[] get data from db
-	[] insert data (to be used in sync and to popluate table)
-	[] update data ()
-	[] helper method to check if objects are equal
-	[] sync method
+`ObjectsAreEqual()`
+- [ ] **ObjectsAreEqual Helper**
+  - [ ] Compare each relevant property  
+  - [ ] Return `true` if equal  
+
+`SyncDataWithApi()`
+- [ ] **Sync Method**
+  - [ ] Fetch data from API  
+  - [ ] Fetch data from DB  
+  - [ ] Build `newObjects` list for missing records  
+  - [ ] Build `updatedObjects` list for changed records  
+  - [ ] Optionally, build `deletedObjects` list for removed records  
+  - [ ] Insert new records  
+  - [ ] Update changed records  
+  - [ ] Delete removed records (if applicable)  
+  - [ ] Log results  
+
+## Service Implementation Progress  
+
+| Service       | Get From API | Get From DB | Insert | Update | Delete | AreEqual | Sync |
+|:--------------|:--------------|:------------|:---------|:--------|:---------|:------------|:-------|
+| ✅ CommentService | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 🔲 UserService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
+| ✅ AlbumService  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 🔲 PhotoService  | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
+| 🔲 PostService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
+| 🔲 TodoService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |

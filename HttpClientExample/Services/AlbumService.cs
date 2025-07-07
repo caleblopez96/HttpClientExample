@@ -65,15 +65,7 @@ namespace HttpClientExample.Services
             return dbAlbums.ToList();
         }
 
-        // helper method to find differences in objects
-        private bool AlbumsAreEqual(AlbumDto objectA, AlbumDto objectB)
-        {
-            return objectA.Title == objectB.Title &&
-                   objectA.UserId == objectB.UserId &&
-                   objectA.Id == objectB.Id;
-        }
-
-        // helper method to update object
+        // update albums in db
         public async Task UpdateAlbumsInDb(List<AlbumDto> albums)
         {
             using var connection = new SqlConnection(_connectionString);
@@ -87,6 +79,21 @@ namespace HttpClientExample.Services
             }
         }
 
+        // delete albums from db
+        public async Task DeleteAlbum(int id)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            string query = @"DELETE FROM Albums WHERE Id = @Id";
+            await connection.ExecuteAsync(query, new { Id = id });
+        }
+
+        // helper method to find differences in objects
+        private static bool AlbumsAreEqual(AlbumDto objectA, AlbumDto objectB)
+        {
+            return objectA.Title == objectB.Title &&
+                   objectA.UserId == objectB.UserId &&
+                   objectA.Id == objectB.Id;
+        }
 
         // sync albums with api
         public async Task SyncAlbumsWithApi()
@@ -112,6 +119,9 @@ namespace HttpClientExample.Services
                 }
             }
 
+            var albumsToDelete = dbAlbums
+                .Where(db => !apiAlbums.Any(api => api.Id == db.Id)).ToList();
+
             if (newAlbums.Count > 0)
             {
                 await InsertAlbumbsIntoDb(newAlbums);
@@ -122,6 +132,15 @@ namespace HttpClientExample.Services
             {
                 await UpdateAlbumsInDb(updatedAlbums);
                 Console.WriteLine($"Updated Albums");
+            }
+
+            if (albumsToDelete.Count > 0)
+            {
+                foreach (var album in albumsToDelete)
+                {
+                    await DeleteAlbum((int)album.Id);
+                }
+                Console.WriteLine($"Deleted {albumsToDelete.Count} albums");
             }
 
             if (newAlbums.Count == 0 && updatedAlbums.Count == 0)

@@ -14,11 +14,16 @@
 → Connection string for the database
 
 4️. Create your CRUD methods:
-→ GetAllFromApi()
-→ GetAllFromDb()
-→ Insert()
-→ Update()
-→ Delete()
+
+→ GetAllFromApi() == read
+
+→ GetAllFromDb() == read
+
+→ Insert() == create
+
+→ Update() == update
+
+→ Delete() == delete
 
 5️. Write a comparison helper method: → Compare two objects to see if they’re equal
 
