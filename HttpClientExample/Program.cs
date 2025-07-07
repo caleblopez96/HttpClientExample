@@ -82,6 +82,7 @@ var todoService = host.Services.GetRequiredService<TodoService>();
 //await DisplayAllAlbumsFromDb(albumService);
 await TestSyncComments(commentService);
 await TestSyncAlbums(albumService);
+//await InsertPhotosIntoDb(photoService);
 
 
 
@@ -351,6 +352,7 @@ static async Task TestSyncAlbums(AlbumService albumService)
 }
 
 // populating db tables
+
 /*static async Task InsertAlbumsIntoDb(AlbumService albumService)
 {
     var albums = await albumService.GetAllAlbumsFromApi();
@@ -361,8 +363,10 @@ static async Task TestSyncAlbums(AlbumService albumService)
 }
 */
 
-static async Task InsertPhotosIntoDb(PhotoService photoService)
+/*static async Task InsertPhotosIntoDb(PhotoService photoService)
 {
     var photos = await photoService.GetAllPhotosFromApi();
-    await photoService.InsertPhotosIntoDb();
+    await photoService.InsertPhotosIntoDb(photos);
+    Console.WriteLine($"Inserted {photos.Count} into the db");
 }
+*/

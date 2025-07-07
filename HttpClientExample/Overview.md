@@ -1,6 +1,35 @@
-# HIGH LEVEL OVERVIEW
+﻿# OVERVIEW
 
-## Do this for each service:
+## High-level overview
+### High-Level Service Implementation Steps:
+
+1️. Create a new service class:
+→ Name it after the entity you're syncing (e.g., PhotoService, AlbumService).
+
+2. Set up constructor with dependencies:
+→ Inject HttpClient and IConfiguration
+
+3. Initialize your fields:
+→ Base URL for the API
+→ Connection string for the database
+
+4️. Create your CRUD methods:
+→ GetAllFromApi()
+→ GetAllFromDb()
+→ Insert()
+→ Update()
+→ Delete()
+
+5️. Write a comparison helper method: → Compare two objects to see if they’re equal
+
+6️. Build your sync method:
+→ Fetch data from API and DB
+→ Find new, updated, and deleted records
+→ Run inserts, updates, and deletes accordingly
+→ Log the results
+
+## Lower-level overview
+### Do this for each service:
 1. Create your service class
 	- Define constructor using constructor injection to receive dependencies
 	- `HttpClient` allows you to make/handle http request
@@ -37,6 +66,8 @@ public class NameOfService(HttpClient client, IConfiguration configuration)
 	4. `InsertObjectsIntoDb` - Inserts objects into the db if they dont already exist
 
 	5. `UpdateObjectsInDb` - Updates Objects in the db that need updating
+
+	6. `DeleteObjectFromDb` - Updates Objects in the db that need updating
 	
 	6. `ObjectsAreEqual` - Helper method to check if objects are equal
 
@@ -171,6 +202,24 @@ public async Task UpdateObjects(List<ObjectDto> objects)
 	{
 		await connection.ExecuteAsync(query, objects);
 	}
+}
+```
+
+- `DeleteObjectFromDb()`
+	- Establish connection with the db using the connection string
+	- Write DELETE statement
+	- await the connection and execute the query
+```csharp
+public async Task DeleteObjectFromDb(int id)
+{
+	// establish connection to the db
+	using var connection = new SqlConnection(_connectionString);
+
+	// write delete statement
+	string query = @"DELETE FROM TableName WHERE Id = @Id";
+
+	// await the connection and execute the query
+	await connection.ExecuteAsync(query, new { Id = id });
 }
 ```
 
