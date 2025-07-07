@@ -1,24 +1,4 @@
-﻿API Method Practice:
-
-API and Endpoints:
-[X] GET	/posts	List all posts
-[X] GET	/posts/{id}	Get a single post by ID
-[X] GET	/comments	List all comments
-[X] GET	/comments/{id}	Get a single comment by ID
-[X] GET	/albums	List all albums
-[X] GET	/albums/{id}	Get a single album by ID
-[X] GET	/photos	List all photos
-[X] GET	/photos/{id}	Get a single photo by ID
-[X] GET	/todos	List all todos
-[X] GET	/todos/{id}	Get a single todo by ID
-[X] GET	/users	List all users
-[X] GET	/users/{id}	Get a single user by ID
-
-Incorporate Logging:
-[] Incorporate Serilogger
-
-Connect to DB:
-[X] connect to database using dapper
+﻿# TODO
 
 **HIGH LEVEL OVERVIEW**
 
@@ -85,6 +65,32 @@ Connect to DB:
 | ✅ CommentService | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 🔲 UserService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
 | ✅ AlbumService  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 🔲 PhotoService  | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
+| 🔲 PhotoService  | ✅ | ✅ | ✅ | 🔲 | 🔲 | 🔲 | 🔲 |
 | 🔲 PostService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
 | 🔲 TodoService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
+
+
+
+
+
+---
+
+API and Endpoints:
+[X] GET	/posts	List all posts
+[X] GET	/posts/{id}	Get a single post by ID
+[X] GET	/comments	List all comments
+[X] GET	/comments/{id}	Get a single comment by ID
+[X] GET	/albums	List all albums
+[X] GET	/albums/{id}	Get a single album by ID
+[X] GET	/photos	List all photos
+[X] GET	/photos/{id}	Get a single photo by ID
+[X] GET	/todos	List all todos
+[X] GET	/todos/{id}	Get a single todo by ID
+[X] GET	/users	List all users
+[X] GET	/users/{id}	Get a single user by ID
+
+Incorporate Logging:
+[] Incorporate Serilogger
+
+Connect to DB:
+[X] connect to database using dapper

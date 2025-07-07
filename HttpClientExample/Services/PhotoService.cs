@@ -65,14 +65,16 @@ namespace HttpClientExample.Services
         }
 
         // get photos from db
-        /*
         public async Task<List<PhotoDto>> GetAllPhotosFromDb()
         {
             using var connection = new SqlConnection(_connectionString);
 
-            string query = @"";
+            string query = @"SELECT AlbumId, Id, Title, Url, ThumbnailUrl FROM Photos;";
+
+            IEnumerable<PhotoDto> dbPhotos = await connection.QueryAsync<PhotoDto>(query);
+            return [.. dbPhotos];
         }
-        */
+
 
         public async Task<PhotoDto> GetPhotoById(int id)
         {
