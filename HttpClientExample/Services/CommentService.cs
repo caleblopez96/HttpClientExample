@@ -92,6 +92,14 @@ namespace HttpClientExample.Services
             }
         }
 
+        // delete comment in db
+        public async Task DeleteComment(int id)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            string query = "DELETE FROM Comments WHERE Id = @Id";
+            await connection.ExecuteAsync(query, new { Id = id });
+        }
+
         // check if objects are equal
         private bool CommentsAreEqual(CommentDto objectA, CommentDto objectB)
         {
@@ -104,13 +112,14 @@ namespace HttpClientExample.Services
         // sync comments
         public async Task SyncCommentsWithApi()
         {
-            // get comments from the api & db
+            // get comments from the API and DB
             List<CommentDto> apiComments = await GetAllCommentsFromApi();
             List<CommentDto> dbComments = await GetAllCommentsFromDb();
 
             var newComments = new List<CommentDto>();
             var updatedComments = new List<CommentDto>();
 
+            // compare each API comment to DB comment
             foreach (var apiComment in apiComments)
             {
                 var dbComment = dbComments.FirstOrDefault(c => c.Id == apiComment.Id);
@@ -123,16 +132,43 @@ namespace HttpClientExample.Services
                     updatedComments.Add(apiComment);
                 }
             }
+
+            // find comments in DB that aren't in the API anymore (deletions)
+            var commentsToDelete = dbComments
+                .Where(db => !apiComments.Any(api => api.Id == db.Id))
+                .ToList();
+
+            // insert new comments
             if (newComments.Count > 0)
             {
                 await InsertComments(newComments);
-                Console.WriteLine($"Inserted {newComments.Count}");
+                Console.WriteLine($"Inserted {newComments.Count} comments");
             }
-            if (newComments.Count == 0 && updatedComments.Count == 0)
+
+            // update changed comments
+            if (updatedComments.Count > 0)
             {
-                Console.WriteLine("No changes detected");
+                await UpdateComments(updatedComments);
+                Console.WriteLine($"Updated {updatedComments.Count} comments");
+            }
+
+            // delete removed comments
+            if (commentsToDelete.Count > 0)
+            {
+                foreach (var comment in commentsToDelete)
+                {
+                    await DeleteComment((int)comment.Id);
+                }
+                Console.WriteLine($"Deleted {commentsToDelete.Count} comments");
+            }
+
+            // log if no changes were detected
+            if (newComments.Count == 0 && updatedComments.Count == 0 && commentsToDelete.Count == 0)
+            {
+                Console.WriteLine("No changes detected in Comments");
             }
         }
+
 
         // api call practice. not a method used for syncing
         /*public async Task<CommentDto> GetCommentByCommentId(int commentId)

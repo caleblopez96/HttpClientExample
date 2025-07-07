@@ -1,4 +1,7 @@
-﻿using HttpClientExample.Models;
+﻿using Dapper;
+using HttpClientExample.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,11 +12,12 @@ using System.Threading.Tasks;
 
 namespace HttpClientExample.Services
 {
-    public class PhotoService(HttpClient client)
+    public class PhotoService(HttpClient client, IConfiguration configuration)
     {
         // using primary constructor
         private readonly HttpClient _client = client;
         private readonly string baseUrl = "https://jsonplaceholder.typicode.com";
+        private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection");
 
         // using primary constructor instead
         //public PhotoService(HttpClient client)
@@ -21,7 +25,21 @@ namespace HttpClientExample.Services
         //    _client = client;
         //}
 
-        public async Task<List<PhotoDto>> GetAllPhotosAsync()
+        // insert photos into db
+        public async Task<List<PhotoDto>> InsertPhotosIntoDb(List<PhotoDto> photos)
+        {
+            var connection = new SqlConnection(_connectionString);
+            string query = @"INSERT INTO Photos (AlbumId, Id, Title, Url, ThumbnailUrl)
+                             Values (@AlbumId, @Id, @Title, @Url, @ThumbnailUrl)";
+            foreach (var photo in photos)
+            {
+                await connection.ExecuteAsync(query, photo);
+            }
+            return photos;
+        }
+
+        // get photos from api
+        public async Task<List<PhotoDto>> GetAllPhotosFromApi()
         {
             string endpoint = "/photos";
             try
@@ -45,6 +63,9 @@ namespace HttpClientExample.Services
                 return [];
             }
         }
+
+        // get photos from db
+        // public async Task<>
 
         public async Task<PhotoDto> GetPhotoById(int id)
         {

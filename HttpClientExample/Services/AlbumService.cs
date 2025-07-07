@@ -19,9 +19,10 @@ namespace HttpClientExample.Services
         private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection");
 
         // using primary constructor instead
-        // public AlbumService(HttpClient client)
+        // public AlbumService(HttpClient client, IConfiguration configuration)
         // {
         //    _client = client;
+        //    _configuration = configuration
         // }
 
         // insert albums into the db
@@ -72,6 +73,21 @@ namespace HttpClientExample.Services
                    objectA.Id == objectB.Id;
         }
 
+        // helper method to update object
+        public async Task UpdateAlbumsInDb(List<AlbumDto> albums)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            string query = @"UPDATE Albums
+                     SET UserId = @UserId, Title = @Title
+                     WHERE Id = @Id";
+
+            foreach (var album in albums)
+            {
+                await connection.ExecuteAsync(query, album);
+            }
+        }
+
+
         // sync albums with api
         public async Task SyncAlbumsWithApi()
         {
@@ -80,8 +96,8 @@ namespace HttpClientExample.Services
             List<AlbumDto> dbAlbums = await GetAllAlbumsFromDb();
 
             // Initialize lists for new and updated albums
-            List<AlbumDto> newAlbums = new List<AlbumDto>();
-            List<AlbumDto> updatedAlbums = new List<AlbumDto>();
+            List<AlbumDto> newAlbums = [];
+            List<AlbumDto> updatedAlbums = [];
 
             foreach (var apiAlbum in apiAlbums)
             {
@@ -95,56 +111,50 @@ namespace HttpClientExample.Services
                     updatedAlbums.Add(apiAlbum);
                 }
             }
+
             if (newAlbums.Count > 0)
             {
                 await InsertAlbumbsIntoDb(newAlbums);
                 Console.WriteLine($"Inserted {newAlbums.Count} albums");
             }
+
+            if (updatedAlbums.Count > 0)
+            {
+                await UpdateAlbumsInDb(updatedAlbums);
+                Console.WriteLine($"Updated Albums");
+            }
+
             if (newAlbums.Count == 0 && updatedAlbums.Count == 0)
             {
-                Console.WriteLine("No changes deteced");
+                Console.WriteLine("No changes detected in Albums");
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // api practice, not used for syncing
-
-        //public async Task<AlbumDto> GetAlbumById(int id)
-        //{
-        //    string endpoint = $"/albums/{id}";
-        //    try
-        //    {
-        //        AlbumDto? album = await _client.GetFromJsonAsync<AlbumDto>(baseUrl + endpoint);
-        //        return album ?? new AlbumDto();
-        //    }
-        //    catch (HttpRequestException ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //        return new AlbumDto();
-        //    }
-        //    catch (JsonException ex)
-        //    {
-        //        Console.WriteLine($"Json Error: {ex.Message}");
-        //        return new AlbumDto();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"Error: {ex.Message}");
-        //        return new AlbumDto();
-        //    }
-        //}
+        /*public async Task<AlbumDto> GetAlbumById(int id)
+        {
+            string endpoint = $"/albums/{id}";
+            try
+            {
+                AlbumDto? album = await _client.GetFromJsonAsync<AlbumDto>(baseUrl + endpoint);
+                return album ?? new AlbumDto();
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new AlbumDto();
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Json Error: {ex.Message}");
+                return new AlbumDto();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return new AlbumDto();
+            }
+        } 
+        */
     }
 }

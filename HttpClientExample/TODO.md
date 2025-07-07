@@ -18,10 +18,10 @@ Method	Endpoint	Description
 [X] GET	/albums/{id}	Get a single album by ID
 [X] GET	/photos	List all photos
 [X] GET	/photos/{id}	Get a single photo by ID
-GET	/todos	List all todos
-GET	/todos/{id}	Get a single todo by ID
-GET	/users	List all users
-GET	/users/{id}	Get a single user by ID
+[X] GET	/todos	List all todos
+[X] GET	/todos/{id}	Get a single todo by ID
+[X] GET	/users	List all users
+[X] GET	/users/{id}	Get a single user by ID
 
 [] Incorporate Serilogger
 
@@ -29,6 +29,19 @@ GET	/users/{id}	Get a single user by ID
 [] sync all users from jsonplaceholder to users table
 [] figure out how to flatten dto into one object and then how to insert it into db. 
 rn the way i have my db set up and the way the dto is arent the same. need to create a mapper or something.
+
+**HIGH LEVEL OVERVIEW**
+Per each service:
+1.	[] Insert Data from Api Into the DB
+		[] establish a connection to the db
+	    [] Write insert query
+	    [] Foreach object inside the collection, execute the query on it
+	    [] return the result (its needed for other functions)
+	
+1.	[] Get Data From Api
+		[] Hit endpoint
+		[] Get the json response and desearialize (using GetFromJsonAsync())
+		[] Handle exceptions
 
 
 [X] Comment service
@@ -43,6 +56,8 @@ rn the way i have my db set up and the way the dto is arent the same. need to cr
 	[] get data from api
 	[] get data from db
 	[] insert data (to be used in sync and to popluate table)
+		[] get all objects from db
+		[] call the insertintodb func for that service using objects as args
 	[] update data ()
 	[] helper method to check if objects are equal
 	[] sync method
