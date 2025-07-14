@@ -80,7 +80,7 @@ namespace HttpClientExample.Services
         }
 
         // delete albums from db
-        public async Task DeleteAlbum(int id)
+        public async Task DeleteAlbumsFromDb(int id)
         {
             using var connection = new SqlConnection(_connectionString);
             string query = @"DELETE FROM Albums WHERE Id = @Id";
@@ -138,7 +138,7 @@ namespace HttpClientExample.Services
             {
                 foreach (var album in albumsToDelete)
                 {
-                    await DeleteAlbum((int)album.Id);
+                    await DeleteAlbumsFromDb((int)album.Id);
                 }
                 Console.WriteLine($"Deleted {albumsToDelete.Count} albums");
             }

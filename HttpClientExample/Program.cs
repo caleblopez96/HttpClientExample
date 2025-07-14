@@ -83,6 +83,7 @@ var todoService = host.Services.GetRequiredService<TodoService>();
 await TestSyncComments(commentService);
 await TestSyncAlbums(albumService);
 //await InsertPhotosIntoDb(photoService);
+await TestSyncPhotos(photoService);
 
 
 
@@ -349,6 +350,11 @@ static async Task TestSyncComments(CommentService commentService)
 static async Task TestSyncAlbums(AlbumService albumService)
 {
     await albumService.SyncAlbumsWithApi();
+}
+
+static async Task TestSyncPhotos(PhotoService photoService)
+{
+    await photoService.SyncPhotosWithApi();
 }
 
 // populating db tables
