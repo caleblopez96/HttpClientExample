@@ -37,11 +37,43 @@ namespace HttpClientExample.Services
             {
                 using var connection = new SqlConnection(_connectionString);
                 const string sql = @"
-                    SELECT Id, Name, Username, Email, Phone
+                    SELECT 
+                        Id, Name, Username, Email, Phone, Website,
+                        Street, Suite, City, Zipcode,
+                        Lat, Lng,
+                        CompanyName, CatchPhrase, Bs
                     FROM Users
                 ";
-                var users = await connection.QueryAsync<UserDto>(sql);
-                return users.ToList();
+                var users = await connection.QueryAsync(sql);
+
+                // mapping to UserDto with nested objects
+                return users.Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Username = u.Username,
+                    Email = u.Email,
+                    Phone = u.Phone,
+                    Website = u.Website,
+                    Address = new AddressDTO
+                    {
+                        Street = u.Street,
+                        Suite = u.Suite,
+                        City = u.City,
+                        Zipcode = u.Zipcode,
+                        Geo = new GeoDTO
+                        {
+                            Lat = u.Lat,
+                            Lng = u.Lng
+                        }
+                    },
+                    Company = new CompanyDTO
+                    {
+                        Name = u.CompanyName,
+                        CatchPhrase = u.CatchPhrase,
+                        Bs = u.Bs
+                    }
+                }).ToList();
             }
             catch (Exception ex)
             {
@@ -50,72 +82,172 @@ namespace HttpClientExample.Services
             }
         }
 
-        // compare results of api and db
-        public async Task CompareUsersFromDbAndApi()
+        public async Task InsertUsers(List<UserDto> users)
         {
-            // get users from the db and api
-            var dbUsers = await GetAllUsersFromDb();
-            var apiUsers = await GetAllUsersFromApi();
+            using var connection = new SqlConnection(_connectionString);
 
-            // get ids of db and api users and put them into a hashset
-            var dbUserIds = dbUsers.Select(u => u.Id).ToHashSet();
-            var apiUserIds = apiUsers.Select(u => u.Id).ToHashSet();
+            var existingIds = (await connection.QueryAsync("SELECT Id FROM Users")).ToHashSet();
 
-            // filter out the user ids that exist
-            var inDbNotApi = dbUsers.Where(u => !apiUserIds.Contains(u.Id)).ToList();
-            var inApiNotDb = apiUsers.Where(u => !dbUserIds.Contains(u.Id)).ToList();
+            string query = @"INSERT INTO USERS(Id, Name, Username, Email, Street, Suite, City, Zipcode, Lat, Lng, Phone, Website, CompanyName, CatchPhrase)
+              VALUES (@Id, @Name, @Username, @Email, @Street, @Suite, @City, @Zipcode, @Lat, @Lng, @Phone, @Website, @CompanyName, @CatchPhrase)";
 
-            Console.WriteLine($"Users in DB but not in API: {inDbNotApi.Count}");
-            foreach (var user in inDbNotApi)
+            foreach (var user in users)
             {
-                Console.WriteLine($"{user.Id}: {user.Name} ({user.Email})");
-            }
-
-            Console.WriteLine($"Users in API but not in DB: {inApiNotDb.Count}");
-            foreach (var user in inApiNotDb)
-            {
-                Console.WriteLine($"{user.Id}: {user.Name} ({user.Email})");
-            }
-
-            // insert the user into db if they dont exist
-            if (inApiNotDb.Count == 0)
-            {
-                using var connection = new SqlConnection(_connectionString);
-                const string insertQuery = @"
-                    INSERT INTO Users (Id, Name, Username, Email, Phone)
-                    VALUES (@Id, @Name, @Username, @Email, @Phone);
-                ";
-                
-                foreach (var user in inApiNotDb)
+                if (existingIds.Contains(user.Id))
+                    continue;
+                var parameters = new
                 {
-                    var parameters = new
-                    {
-                        user.Id,
-                        user.Name,
-                        user.Username,
-                        user.Email,
-                        user.Phone
-                    };
-                    await connection.ExecuteAsync(insertQuery, parameters);
-                    Console.WriteLine($"Inserted user {user.Id}: {user.Name} ({user.Email}) into DB.");
+                    user.Id,
+                    user.Name,
+                    user.Username,
+                    user.Email,
+                    Street = user.Address?.Street,
+                    Suite = user.Address?.Suite,
+                    City = user.Address?.City,
+                    Zipcode = user.Address?.Zipcode,
+                    Lat = user.Address?.Geo?.Lat,
+                    Lng = user.Address?.Geo?.Lng,
+                    user.Phone,
+                    user.Website,
+                    CompanyName = user.Company?.Name,
+                    CatchPhrase = user.Company?.CatchPhrase
+                };
+                await connection.ExecuteAsync(query, parameters);
+            }
+        }
+
+        // update users
+        public async Task UpdateUsers(List<UserDto> users)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            string query = @"UPDATE USERS
+                     SET Name = @Name,
+                         Username = @Username,
+                         Email = @Email,
+                         Street = @Street,
+                         Suite = @Suite,
+                         City = @City,
+                         Zipcode = @Zipcode,
+                         Lat = @Lat,
+                         Lng = @Lng,
+                         Phone = @Phone,
+                         Website = @Website,
+                         CompanyName = @CompanyName,
+                         CatchPhrase = @CatchPhrase,
+                         Bs = @Bs
+                     WHERE Id = @Id";
+
+            foreach (var user in users)
+            {
+                if (user.Address is null || user.Address.Geo is null || user.Company is null)
+                    continue; // or throw/log error if these are required
+
+                await connection.ExecuteAsync(query, new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Username,
+                    user.Email,
+                    Street = user.Address.Street,
+                    Suite = user.Address.Suite,
+                    City = user.Address.City,
+                    Zipcode = user.Address.Zipcode,
+                    Lat = user.Address.Geo.Lat,
+                    Lng = user.Address.Geo.Lng,
+                    user.Phone,
+                    user.Website,
+                    CompanyName = user.Company.Name,
+                    CatchPhrase = user.Company.CatchPhrase,
+                    Bs = user.Company.Bs
+                });
+            }
+        }
+
+        // delete user in db
+        public async Task DeleteUser(int id)
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            string query = @"DELETE FROM Users WHERE Id = @Id ";
+
+            await connection.ExecuteAsync(query, new { Id = @id });
+        }
+
+        // check if objects are equal
+        private bool UsersAreEqual(UserDto userA, UserDto userB)
+        {
+            if (userA == null || userB == null)
+                return false;
+
+            bool addressEqual = (userA.Address == null && userB.Address == null) ||
+                                (userA.Address != null && userB.Address != null &&
+                                 userA.Address.Street == userB.Address.Street &&
+                                 userA.Address.Suite == userB.Address.Suite &&
+                                 userA.Address.City == userB.Address.City &&
+                                 userA.Address.Zipcode == userB.Address.Zipcode);
+
+            return userA.Id == userB.Id
+                && userA.Name == userB.Name
+                && userA.Username == userB.Username
+                && userA.Email == userB.Email
+                && userA.Phone == userB.Phone
+                && userA.Website == userB.Website
+                && addressEqual;
+        }
+
+        // sync users
+        public async Task SyncUsersWithApi()
+        {
+            List<UserDto> apiUsers = await GetAllUsersFromApi();
+            List<UserDto> dbUsers = await GetAllUsersFromDb();
+
+            var newUsers = new List<UserDto>();
+            var updatedUsers = new List<UserDto>();
+
+            // compare api user to db user
+            foreach (var apiUser in apiUsers)
+            {
+                var dbUser = dbUsers.FirstOrDefault(c => c.Id == apiUser.Id);
+                if (dbUser == null)
+                {
+                    newUsers.Add(apiUser);
+                }
+                else if (!UsersAreEqual(apiUser, dbUser))
+                {
+                    updatedUsers.Add(apiUser);
                 }
             }
+            var usersToDelete = dbUsers
+                .Where(db => !apiUsers.Any(api => api.Id == db.Id)).ToList();
 
-            Console.WriteLine("no users to insert");
-
-            // update
-            var commonIds = dbUserIds.Intersect(apiUserIds);
-            foreach (var id in commonIds)
+            // insert new users
+            if (newUsers.Count > 0)
             {
-                var dbUser = dbUsers.First(u => u.Id == id);
-                var apiUser = apiUsers.First(u => u.Id == id);
-                if (!dbUser.Name.Equals(apiUser.Name, StringComparison.OrdinalIgnoreCase) ||
-                    !dbUser.Email.Equals(apiUser.Email, StringComparison.OrdinalIgnoreCase))
+                await InsertUsers(newUsers);
+                Console.WriteLine($"Inserted {newUsers.Count} users");
+            }
+
+            // update changed users
+            if (updatedUsers.Count > 0)
+            {
+                await UpdateUsers(updatedUsers);
+                Console.WriteLine($"Updated {updatedUsers.Count} users");
+            }
+
+            // delete user
+            if (usersToDelete.Count > 0)
+            {
+                foreach (var user in usersToDelete)
                 {
-                    Console.WriteLine($"Difference for user {id}:");
-                    Console.WriteLine($"  DB:  {dbUser.Name}, {dbUser.Email}");
-                    Console.WriteLine($"  API: {apiUser.Name}, {apiUser.Email}");
+                    await DeleteUser(user.Id);
                 }
+                Console.WriteLine($"Deleted {usersToDelete.Count} {(usersToDelete.Count == 1 ? "user" : "users")}");
+            }
+
+            // log if no changes detected
+            if (newUsers.Count == 0 && updatedUsers.Count == 0 && usersToDelete.Count == 0)
+            {
+                Console.WriteLine("No changes detected in users.");
             }
         }
 

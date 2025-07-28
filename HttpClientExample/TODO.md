@@ -65,7 +65,7 @@
 | ✅ CommentService | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 🔲 UserService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
 | ✅ AlbumService  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 🔲 PhotoService  | ✅ | ✅ | ✅ | 🔲 | 🔲 | 🔲 | 🔲 |
+| 🔲 PhotoService  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | 🔲 PostService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
 | 🔲 TodoService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
 

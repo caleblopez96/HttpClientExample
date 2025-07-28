@@ -80,10 +80,12 @@ var todoService = host.Services.GetRequiredService<TodoService>();
 //await InsertAlbumsIntoDb(albumService);
 //Console.WriteLine();
 //await DisplayAllAlbumsFromDb(albumService);
-await TestSyncComments(commentService);
-await TestSyncAlbums(albumService);
+//await TestSyncComments(commentService);
+//await TestSyncAlbums(albumService);
 //await InsertPhotosIntoDb(photoService);
-await TestSyncPhotos(photoService);
+//await TestSyncPhotos(photoService);
+//await InsertUsersIntoDb(userService);
+await TestSyncUsers(userService);
 
 
 
@@ -357,6 +359,11 @@ static async Task TestSyncPhotos(PhotoService photoService)
     await photoService.SyncPhotosWithApi();
 }
 
+static async Task TestSyncUsers(UserService userService)
+{
+    await userService.SyncUsersWithApi();
+}
+
 // populating db tables
 
 /*static async Task InsertAlbumsIntoDb(AlbumService albumService)
@@ -374,5 +381,13 @@ static async Task TestSyncPhotos(PhotoService photoService)
     var photos = await photoService.GetAllPhotosFromApi();
     await photoService.InsertPhotosIntoDb(photos);
     Console.WriteLine($"Inserted {photos.Count} into the db");
+}
+*/
+
+/*static async Task InsertUsersIntoDb(UserService userService)
+{
+    var users = await userService.GetAllUsersFromApi();
+    await userService.InsertUsers(users);
+    Console.WriteLine($"Inserted {users.Count} entered into db");
 }
 */
