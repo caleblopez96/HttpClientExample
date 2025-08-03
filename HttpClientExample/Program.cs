@@ -80,15 +80,18 @@ var todoService = host.Services.GetRequiredService<TodoService>();
 //await InsertAlbumsIntoDb(albumService);
 //Console.WriteLine();
 //await DisplayAllAlbumsFromDb(albumService);
-//await TestSyncComments(commentService);
-//await TestSyncAlbums(albumService);
-//await InsertPhotosIntoDb(photoService);
-//await TestSyncPhotos(photoService);
+//await DisplayPostsFromDb(postService);
+//await DisplayPostFromApi(postService);
+//await InsertPostsIntoDb(postService);
 //await InsertUsersIntoDb(userService);
+//await InsertPhotosIntoDb(photoService);
+
+// syncs:
+await TestSyncComments(commentService);
+await TestSyncAlbums(albumService);
+await TestSyncPhotos(photoService);
 await TestSyncUsers(userService);
-
-
-
+await TestSyncPosts(postService);
 
 // App logic methods
 
@@ -343,6 +346,28 @@ await TestSyncUsers(userService);
     }
 }*/
 
+/*static async Task DisplayPostFromApi(PostService postService)
+{
+    var posts = await postService.GetAllPostFromApi();
+    foreach (var post in posts)
+    {
+        Console.WriteLine($"{post.Id}");
+        Console.WriteLine($"{post.Title}");
+    }
+}*/
+
+/*static async Task DisplayPostsFromDb(PostService postService)
+{
+    var posts = await postService.GetAllPostFromDb();
+    foreach (var post in posts)
+    {
+        Console.WriteLine($"{post.Id}");
+        Console.WriteLine($"{post.Title}");
+        Console.WriteLine($"{post.Body}");
+    }
+}*/
+
+
 // syncing test
 static async Task TestSyncComments(CommentService commentService)
 {
@@ -362,6 +387,11 @@ static async Task TestSyncPhotos(PhotoService photoService)
 static async Task TestSyncUsers(UserService userService)
 {
     await userService.SyncUsersWithApi();
+}
+
+static async Task TestSyncPosts(PostService postService)
+{
+    await postService.SyncPostWithApi();
 }
 
 // populating db tables
@@ -391,3 +421,10 @@ static async Task TestSyncUsers(UserService userService)
     Console.WriteLine($"Inserted {users.Count} entered into db");
 }
 */
+
+/*static async Task InsertPostsIntoDb(PostService postService)
+{
+    var posts = await postService.GetAllPostFromApi();
+    await postService.InsertPostIntoDb(posts);
+    Console.WriteLine($"{posts.Count} posts inserted into DB.");
+}*/
