@@ -101,34 +101,42 @@ Connect to DB:
 
 -----
 proposed next steps: 
+
 # Full-Stack Sync Project - TODO List
 TODO:
 ✅ Finish last sync service (comments, etc.).
 
-✅ Add GET /api/[resource] + POST /api/sync/[resource] endpoints.
+[] Create api to access db. api needs to include endpoints listed in ##backend tasks.
 
-✅ Build out React frontend one feature/page at a time.
+[] Build out React frontend one feature/page at a time.
 
-## 🗂 BACKEND TASKS
+## BACKEND TASKS
 
-- [ ] ✅ Create REST API endpoints for:
-  - [ ] GET /api/posts — return all posts from your DB
-  - [ ] GET /api/users — return all users from your DB
-  - [ ] GET /api/comments — return all comments from your DB
-  - [ ] GET /api/
-  - [ ] POST /api/sync/posts — sync posts from JSONPlaceholder to your DB
-  - [ ] POST /api/sync/users — sync users
-  - [ ] POST /api/sync/comments — sync comments
-
-- [ ] ✅ Enable CORS so React frontend can talk to backend
-
-- [ ] ✅ Create SyncService logs (optional)
-  - [ ] Store timestamp, resource name, and change count
-  - [ ] Create GET /api/sync/logs endpoint
+✅ Create REST API endpoints for:
+[] GET /api/albums — return all albums from DB
+[] GET /api/comments — return all comments from DB
+[] GET /api/photos — return all photos from DB
+[] GET /api/posts — return all posts from DB
+[] GET /api/todo — return all todos from DB
+[] GET /api/users — return all users from DB
+[] POST /api/sync/posts — sync posts from JSONPlaceholder to your DB
+[] POST /api/sync/users — sync users
+[] POST /api/sync/comments — sync comments
+[] POST /api/sync/albums — sync albums
+[] POST /api/sync/photos — sync photos
+[] POST /api/sync/todo — sync todos
+[] GET /api/posts/{id} — return a single post by ID
+[] GET /api/users/{id} — return a single user by ID
+[] POST /api/posts — create a new post
+[] PUT /api/posts/{id} — update an existing post
+[] DELETE /api/posts/{id} — delete a post by ID
+[] POST /api/users — create a new user
+[] PUT /api/users/{id} — update a user
+[] DELETE /api/users/{id} — delete a user by ID
 
 ---
 
-## 🎨 FRONTEND SETUP (React)
+## FRONTEND (React)
 
 - [ ] ✅ Initialize React app using Vite or Bun (I like vite)
   - [ ] Install Axios
