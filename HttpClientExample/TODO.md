@@ -67,7 +67,7 @@
 | ✅ AlbumService  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ✅ PhotoService  | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | ✅ PostService   | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 🔲 TodoService   | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 | 🔲 |
+| ✅ TodoService   | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 
 
@@ -75,7 +75,7 @@
 
 ---
 
-API and Endpoints:
+JSON Placeholder API and Endpoints:
 [X] GET	/posts	List all posts
 [X] GET	/posts/{id}	Get a single post by ID
 [X] GET	/comments	List all comments
@@ -94,3 +94,88 @@ Incorporate Logging:
 
 Connect to DB:
 [X] connect to database using dapper
+
+
+
+
+
+-----
+proposed next steps: 
+# Full-Stack Sync Project - TODO List
+TODO:
+✅ Finish last sync service (comments, etc.).
+
+✅ Add GET /api/[resource] + POST /api/sync/[resource] endpoints.
+
+✅ Build out React frontend one feature/page at a time.
+
+## 🗂 BACKEND TASKS
+
+- [ ] ✅ Create REST API endpoints for:
+  - [ ] GET /api/posts — return all posts from your DB
+  - [ ] GET /api/users — return all users from your DB
+  - [ ] GET /api/comments — return all comments from your DB
+  - [ ] GET /api/
+  - [ ] POST /api/sync/posts — sync posts from JSONPlaceholder to your DB
+  - [ ] POST /api/sync/users — sync users
+  - [ ] POST /api/sync/comments — sync comments
+
+- [ ] ✅ Enable CORS so React frontend can talk to backend
+
+- [ ] ✅ Create SyncService logs (optional)
+  - [ ] Store timestamp, resource name, and change count
+  - [ ] Create GET /api/sync/logs endpoint
+
+---
+
+## 🎨 FRONTEND SETUP (React)
+
+- [ ] ✅ Initialize React app using Vite or Bun (I like vite)
+  - [ ] Install Axios
+
+- [ ] ✅ Create components for each resource:
+  - [ ] `<Posts />`
+  - [ ] `<Users />`
+  - [ ] `<Comments />`
+
+- [ ] ✅ In each component:
+  - [ ] Fetch data from backend API
+  - [ ] Display list of data
+  - [ ] Show loading/error states
+
+- [ ] ✅ Create a "Sync Now" button:
+  - [ ] Call `POST /api/sync/[resource]` when clicked
+  - [ ] Refresh data after syncing
+
+---
+
+## 🧠 BONUS ENHANCEMENTS
+
+- [ ] Add table sorting / filtering on frontend
+- [ ] Display sync logs or last synced time
+- [ ] Add a search bar
+- [ ] Add pagination if data gets large
+- [ ] Create a combined "Sync All" button (triggers all syncs)
+- [ ] Add loading spinner when syncing
+- [ ] Add styling (e.g., TailwindCSS or Bootstrap)
+
+---
+
+## 🛡️ FUTURE IDEAS (Optional)
+
+- [ ] Add authentication (JWT login or simple token-based)
+- [ ] Add unit tests to backend sync logic
+- [ ] Dockerize backend and database
+- [ ] Deploy backend (e.g., Render, Railway, Fly.io)
+- [ ] Deploy frontend (e.g., Vercel, Netlify)
+
+
+
+8. Add Unit Tests
+Test your sync logic:
+
+Write tests for CRUD comparison logic.
+
+Mock the API.
+
+Verify your app behaves as expected.

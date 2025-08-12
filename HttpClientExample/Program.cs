@@ -85,6 +85,7 @@ var todoService = host.Services.GetRequiredService<TodoService>();
 //await InsertPostsIntoDb(postService);
 //await InsertUsersIntoDb(userService);
 //await InsertPhotosIntoDb(photoService);
+//await InsertTodosIntoDb(todoService);
 
 // syncs:
 await TestSyncComments(commentService);
@@ -92,6 +93,7 @@ await TestSyncAlbums(albumService);
 await TestSyncPhotos(photoService);
 await TestSyncUsers(userService);
 await TestSyncPosts(postService);
+await TestSyncTodos(todoService);
 
 // App logic methods
 
@@ -394,6 +396,11 @@ static async Task TestSyncPosts(PostService postService)
     await postService.SyncPostWithApi();
 }
 
+static async Task TestSyncTodos(TodoService todoService)
+{
+    await todoService.SyncTodosWithApi();
+}
+
 // populating db tables
 
 /*static async Task InsertAlbumsIntoDb(AlbumService albumService)
@@ -427,4 +434,11 @@ static async Task TestSyncPosts(PostService postService)
     var posts = await postService.GetAllPostFromApi();
     await postService.InsertPostIntoDb(posts);
     Console.WriteLine($"{posts.Count} posts inserted into DB.");
+}*/
+
+/*static async Task InsertTodosIntoDb(TodoService todoService)
+{
+    var todos = await todoService.GetTodosFromApi();
+    await todoService.InsertTodosIntoDb(todos);
+    Console.WriteLine($"{todos.Count} todo's added to the db");
 }*/

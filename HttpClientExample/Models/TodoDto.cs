@@ -10,16 +10,16 @@ namespace HttpClientExample.Models
 {
     public class TodoDto
     {
-        [JsonPropertyName("userId")]
+        [JsonPropertyName("UserId")]
         public required int UserId { get; set; }
 
-        [JsonPropertyName("id")]
+        [JsonPropertyName("Id")]
         public required int Id { get; set; }
 
-        [JsonPropertyName("title")]
+        [JsonPropertyName("Title")]
         public required string Title { get; set; }
 
-        [JsonPropertyName("completed")]
-        public required bool Status { get; set; }
+        [JsonPropertyName("Completed")]
+        public required bool Completed { get; set; }
     }
 }
